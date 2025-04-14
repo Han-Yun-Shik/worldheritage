@@ -1,15 +1,70 @@
+/* 외부 폰트 import를 최상단으로 이동 */
+@import url(https://fonts.googleapis.com/earlyaccess/notosanskr.css);
+@import url(https://fonts.googleapis.com/earlyaccess/nanumgothic.css);
+@import url(https://fonts.googleapis.com/earlyaccess/nanummyeongjo.css);
+
 @import "tailwindcss";
+
+/*본고딕 = 노토산스(Noto Sans KR) 익스플로 웹폰트 해결방법*/
+@font-face {
+  font-family: 'Noto Sans KR';
+  font-style: normal;
+  font-weight: 100;
+  src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Thin.woff2) format('woff2'),
+    url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Thin.woff) format('woff'),
+    url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Thin.otf) format('opentype');
+}
+
+@font-face {
+  font-family: 'Noto Sans KR';
+  font-style: normal;
+  font-weight: 300;
+  src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Light.woff2) format('woff2'),
+    url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Light.woff) format('woff'),
+    url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Light.otf) format('opentype');
+}
+
+@font-face {
+  font-family: 'Noto Sans KR';
+  font-style: normal;
+  font-weight: 400;
+  src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Regular.woff2) format('woff2'),
+    url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Regular.woff) format('woff'),
+    url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Regular.otf) format('opentype');
+}
+
+@font-face {
+  font-family: 'Noto Sans KR';
+  font-style: normal;
+  font-weight: 500;
+  src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Medium.woff2) format('woff2'),
+    url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Medium.woff) format('woff'),
+    url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Medium.otf) format('opentype');
+}
+
+@font-face {
+  font-family: 'Noto Sans KR';
+  font-style: normal;
+  font-weight: 700;
+  src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.woff2) format('woff2'),
+    url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.woff) format('woff'),
+    url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.otf) format('opentype');
+}
+
+@font-face {
+  font-family: 'Noto Sans KR';
+  font-style: normal;
+  font-weight: 900;
+  src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Black.woff2) format('woff2'),
+    url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Black.woff) format('woff'),
+    url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Black.otf) format('opentype');
+}
+
+
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -19,8 +74,54 @@
   }
 }
 
+
+
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family:'Noto Sans KR', sans-serif;
+  margin: 0;
 }
+
+div {font-family:'Noto Sans KR', sans-serif;}
+/* 모든 a 태그의 밑줄 제거 */
+a {
+  text-decoration: none;
+}
+
+/* globals.css */
+.w_lk {
+  color: #333;
+  text-decoration: none;
+}
+.w_lk:hover,
+.w_lk:focus {
+  text-decoration: none;
+}
+
+
+.w_navi_wrap {
+  padding: 5px 10px;
+  border-bottom: 1px solid #d1d1d1;
+  text-align: right;
+}
+
+.w_adm_navi_wrap {
+  padding: 5px 10px;
+  border-bottom: 1px solid #d1d1d1;
+  margin-bottom: 10px;
+}
+.w_u_navi_wrap { padding: 15px 10px;background-color: #efefef;}
+.w_t_btn {padding: 7px 12px; background-color: #22ac38;color: #ffffff;margin-right: 5px;border-radius: 3px;}
+.w_list_wrap { display: grid; gap: 20px; width: 1400px; margin: 0 auto;grid-template-columns: 49% auto;margin-top: 30px;}
+.w_list_wrap > div { border: 1px solid #d1d1d1;border-radius: 11px;height: 170px;cursor: pointer; }
+.w_list_con { display: grid;column-gap: 20;grid-template-columns: 270px auto; }
+.w_list_con_right { padding: 15px;position: relative; }
+.w_list_con_subject { font-size: 19px;font-weight: 550; }
+.w_list_con_intro { font-size: 15px;color: #535353;margin-top: 10px; }
+.w_list_con_info { display: grid;grid-template-columns: 90px 90px auto;position: absolute; bottom: 20px; width: 90%;}
+.w_list_con_info_price { text-align: right;font-size: 19px;font-weight: 500px; }
+.w_list_peo_wrap { display: inline-block;background-color: #efefef;padding: 5px 15px; border-radius: 40px}
+.w_list_peo_wrap_red { display: inline-block;background-color: #da5050;color: #ffffff;padding: 5px 15px; border-radius: 40px}
+.w_list_img { width: 100%;height: 170px;border-top-left-radius: 11px;border-bottom-left-radius: 11px;}
+.w_calendar_wrap { width: 1400px; margin: 0 auto; }
