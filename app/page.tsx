@@ -52,10 +52,6 @@ export default function Home() {
     return <p>Loading...</p>;
   }
 
-  const imageUrl = encodeURIComponent(
-    `${API_BASE_URL}/home/hosting_users/worldheritage/apps/worldheritage_worldheritage/uploads/1744707510747-880908418-nature-2.jpg`
-  );
-
   return (
     <div>
       <Navi />
@@ -64,9 +60,14 @@ export default function Home() {
           <div key={item.wr_seq} onClick={() => router.push(`/wuser/ucalendar/${item.wr_shopcode}`)}>
             <div className="w_list_con">
               <div>
-                <img src={`${API_BASE_URL}${item.files[0].file_path}`} className="w_list_img" />
-                <img src={`/api/wdm/image-proxy?url=${imageUrl}`} alt="Gallery Image" />
-                
+
+                {(() => {
+                  const imageUrl = encodeURIComponent(`${API_BASE_URL}${item.files[0].file_path}`);
+                  return (
+                    <img src={`/api/wdm/image-proxy?url=${imageUrl}`} alt="Gallery Image" className="w_list_img" />
+                  );
+                })()}
+
               </div>
               <div className="w_list_con_right">
                 <p className="w_list_con_subject">{item.wr_shopnm}</p>
