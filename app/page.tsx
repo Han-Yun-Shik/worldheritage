@@ -61,6 +61,7 @@ export default function Home() {
             <div className="w_list_con">
               <div>
                 <img src={`${API_BASE_URL}${item.files[0].file_path}`} className="w_list_img" />
+                <img src="http://worldheritage.cafe24app.com/home/hosting_users/worldheritage/apps/worldheritage_worldheritage/uploads/1744707510747-880908418-nature-2.jpg" />
               </div>
               <div className="w_list_con_right">
                 <p className="w_list_con_subject">{item.wr_shopnm}</p>
