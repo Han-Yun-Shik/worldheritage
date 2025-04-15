@@ -62,8 +62,8 @@ export default function Plogin() {
 
                     <Card className="w-full max-w-md mx-auto">
                         <CardHeader>
-                            <CardTitle className="text-2xl">로그인</CardTitle>
-                            <CardDescription>이메일과 연락처를 입력하여 계정에 로그인하세요.</CardDescription>
+                            <CardTitle className="text-2xl">예약확인</CardTitle>
+                            <CardDescription>이메일과 연락처를 입력하세요.</CardDescription>
                             {message && <p>{message}</p>}
                         </CardHeader>
                         <form onSubmit={handleSubmit}>
@@ -97,8 +97,8 @@ export default function Plogin() {
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <Button type="submit" className="w-full" disabled={isLoading}>
-                                    {isLoading ? "처리 중..." : "로그인"}
+                                <Button type="submit" className="w_btn_submit" disabled={isLoading}>
+                                    {isLoading ? "처리 중..." : "확인"}
                                 </Button>
                             </CardFooter>
                         </form>

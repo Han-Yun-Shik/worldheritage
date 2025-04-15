@@ -31,7 +31,7 @@ export default function RootLayout({
         <Link href="/wdm/optlist" className="w_lk">옵션목록</Link> | 
         <Link href="/wdm/optwrite" className="w_lk">옵션등록</Link> | 
         <Link href="/wdm/rsvlist" className="w_lk">예약현황</Link> | 
-        <Link href="/wdm/swritemm" className="w_lk">멀티테스트</Link> 
+        <Link href="/" className="w_lk">사용자홈</Link> 
       </div>
 
       {children}

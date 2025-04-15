@@ -49,7 +49,7 @@ export default function Rsvlist() {
         if (!window.confirm("정말 삭제하시겠습니까?")) return;
     
         try {
-            const res = await axios.delete(`/api/wdm/optdelete?id=${wr_code}`);
+            const res = await axios.delete(`/api/wdm/rsvdelete?id=${wr_code}`);
             if (res.status === 200) {
                 alert("삭제되었습니다.");
                 setData(prevData => prevData.filter(item => item.wr_code !== wr_code)); // 화면에서 즉시 제거

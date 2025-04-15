@@ -119,9 +119,17 @@ a {
 .w_list_con_right { padding: 15px;position: relative; }
 .w_list_con_subject { font-size: 19px;font-weight: 550; }
 .w_list_con_intro { font-size: 15px;color: #535353;margin-top: 10px; }
-.w_list_con_info { display: grid;grid-template-columns: 90px 90px auto;position: absolute; bottom: 20px; width: 90%;}
+.w_list_con_info { display: grid;grid-template-columns: 100px 100px auto;position: absolute; bottom: 20px; width: 90%;}
 .w_list_con_info_price { text-align: right;font-size: 19px;font-weight: 500px; }
 .w_list_peo_wrap { display: inline-block;background-color: #efefef;padding: 5px 15px; border-radius: 40px}
-.w_list_peo_wrap_red { display: inline-block;background-color: #da5050;color: #ffffff;padding: 5px 15px; border-radius: 40px}
+.w_list_peo_wrap_red { display: inline-block;background-color: #da5050;color: #ffffff;padding: 5px 15px; border-radius: 40px;}
 .w_list_img { width: 100%;height: 170px;border-top-left-radius: 11px;border-bottom-left-radius: 11px;}
 .w_calendar_wrap { width: 1400px; margin: 0 auto; }
+.w_rsvbtn_wrap { display: grid; grid-template-columns: 19% 19% 19% 19% 19%; justify-content: space-between;}
+.w_rsvbtn_wrap > div { font-size: 17px; font-weight: 400; }
+.w_rsvbtn_off { background-color: #ffffff; border: 1px solid #d1d1d1; border-radius: 7px; text-align: center; padding: 10px 0; }
+.w_rsvbtn_on { background-color: #d0d0d1; border: 1px solid #333333; border-radius: 7px; text-align: center; padding: 10px 0; }
+.w_rsvbtn_deadline { background-color: #f3f4f6; border: 1px solid #d1d1d1; border-radius: 7px; text-align: center; padding: 10px 0; }
+.w_rsvdate_font { font-size: 21px; font-weight: 500;margin-bottom: 20px; }
+.w_rsvdate_font2 { font-size: 17px; font-weight: 500;margin-bottom: 10px; }
+.w_rsvdate_font3 { font-size: 21px; font-weight: 500;margin-bottom: 10px; }

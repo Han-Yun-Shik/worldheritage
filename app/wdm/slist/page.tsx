@@ -46,9 +46,9 @@ export default function Slist() {
 
     const handleDelete = async (wr_shopcode?: string) => {
         if (!wr_shopcode) return;
-        
+
         if (!window.confirm("정말 삭제하시겠습니까?")) return;
-    
+
         try {
             const res = await axios.delete(`/api/wdm/sdelete?id=${wr_shopcode}`);
             if (res.status === 200) {
@@ -90,7 +90,7 @@ export default function Slist() {
                             <td style={{ textAlign: "center" }}>
                                 {item.files.length > 0 ? (
                                     <img
-                                        src={`http://worldheritage.cafe24app.com${item.files[0]?.file_path}`}
+                                        src={`${process.env.NEXT_PUBLIC_API_URL}${item.files[0]?.file_path}`}
                                         alt="상품 이미지"
                                         style={{ width: "50px", height: "50px", objectFit: "cover" }}
                                     />

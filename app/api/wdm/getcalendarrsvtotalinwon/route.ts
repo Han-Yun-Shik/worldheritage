@@ -5,18 +5,19 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
-    const wr_tourdate = searchParams.get("wr_tourdate");
+    const year = searchParams.get("year");
+    const month = searchParams.get("month");
     const wr_shopcode = searchParams.get("wr_shopcode");
 
-    console.log("param: ", wr_tourdate, wr_shopcode)
+    console.log("param: ", year, month, wr_shopcode)
 
-    if (!wr_tourdate || !wr_shopcode) {
+    if (!year || !month || !wr_shopcode) {
         return NextResponse.json({ error: "Missing required parameters" }, { status: 400 });
     }
 
     try {
         const res = await axios.get(`${API_BASE_URL}/api/getcalendarrsvtotalinwon`, {
-            params: { wr_tourdate, wr_shopcode },
+            params: { year, month, wr_shopcode },
         });
         return NextResponse.json(res.data);
     } catch (error) {

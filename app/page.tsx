@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { REGDATE_STR } from "@/app/utils";
 import Navi from "@/components/Navi";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 interface FileData {
   file_seq: number;
   wr_code: string;
@@ -58,7 +60,7 @@ export default function Home() {
           <div key={item.wr_seq} onClick={() => router.push(`/wuser/ucalendar/${item.wr_shopcode}`)}>
             <div className="w_list_con">
               <div>
-                <img src="img/nature-2.jpg" className="w_list_img" />
+                <img src={`${API_BASE_URL}${item.files[0].file_path}`} className="w_list_img" />
               </div>
               <div className="w_list_con_right">
                 <p className="w_list_con_subject">{item.wr_shopnm}</p>
