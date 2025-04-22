@@ -11,6 +11,9 @@ export default function Swrite() {
         wr_shopnm: "",
         wr_intro: "",
         wr_content: "",
+        wr_include: "",
+        wr_noinclude: "",
+        wr_note: "",
         wr_price: "",
         addfile1: null,
     });
@@ -35,6 +38,9 @@ export default function Swrite() {
         data.append("wr_shopnm", formData.wr_shopnm);
         data.append("wr_intro", formData.wr_intro);
         data.append("wr_content", formData.wr_content);
+        data.append("wr_include", formData.wr_include);
+        data.append("wr_noinclude", formData.wr_noinclude);
+        data.append("wr_note", formData.wr_note);
         data.append("wr_price", formData.wr_price);
         if (formData.addfile1) data.append("addfile1", formData.addfile1);
 
@@ -80,7 +86,34 @@ export default function Swrite() {
                     <label htmlFor="wr_content">상세소개:</label>
                     <textarea
                         name="wr_content"
-                        id="wr_intro"
+                        id="wr_content"
+                        onChange={handleChange}
+                        className="w_form_textarea"
+                    />
+                </div>
+                <div>
+                    <label htmlFor="wr_include">포함사항:</label>
+                    <textarea
+                        name="wr_include"
+                        id="wr_include"
+                        onChange={handleChange}
+                        className="w_form_textarea"
+                    />
+                </div>
+                <div>
+                    <label htmlFor="wr_noinclude">불포함사항:</label>
+                    <textarea
+                        name="wr_noinclude"
+                        id="wr_noinclude"
+                        onChange={handleChange}
+                        className="w_form_textarea"
+                    />
+                </div>
+                <div>
+                    <label htmlFor="wr_note">유의사항:</label>
+                    <textarea
+                        name="wr_note"
+                        id="wr_note"
                         onChange={handleChange}
                         className="w_form_textarea"
                     />

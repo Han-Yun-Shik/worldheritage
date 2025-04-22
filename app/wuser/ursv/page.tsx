@@ -134,23 +134,70 @@ export default function Ursv() {
         console.log("전송 데이터:", { ...formData, participants });
 
         try {
+            // 1. 예약 데이터 서버에 전송
             const response = await axios.post("/api/wdm/rsvpost", { ...formData, participants }, {
                 headers: {
                     "Content-Type": "application/json",
                 },
             });
             setMessage(response.data.message);
-            router.push("/");
+
+            // 2. 인증 요청: 이메일 + 전화번호만 전달
+            const { wr_email, wr_tel } = formData;
+            const loginResponse = await axios.post("/api/wdm/plogin", { wr_email, wr_tel });
+
+            // 3. localStorage에 인증 정보 저장
+            localStorage.setItem("ploginData", JSON.stringify({ wr_email, wr_tel }));
+
+            // 4. 예약 목록 페이지로 이동
+            router.push("/wuser/plist");
+
         } catch (error) {
             console.error("데이터 전송 실패:", error);
             setMessage("데이터 전송 실패");
         }
     };
 
+    // const nicepayrq = async (e: React.FormEvent) => {
+    //     e.preventDefault();
+
+    //     try {
+    //         const res = await axios.get("/api/wdm/nicepayrq", {
+    //             responseType: 'text'
+    //         });
+
+    //         // 새 창 열기
+    //         const popup = window.open("", "_blank", "width=500,height=700");
+    //         if (popup) {
+    //             popup.document.open();
+    //             popup.document.write(res.data);
+    //             popup.document.close();
+    //         } else {
+    //             alert("팝업이 차단되었습니다. 팝업을 허용해주세요.");
+    //         }
+
+    //     } catch (error) {
+    //         console.error("데이터 불러오기 오류:", error);
+    //     }
+    // };
+
+    // useEffect(() => {
+    //     const handleMessage = (event: MessageEvent) => {
+    //         if (event.data?.status === "success") {
+    //             alert("결제가 완료되었습니다!");
+    //             // 페이지 이동 or 상태 업데이트 등
+    //         }
+    //     };
+
+    //     window.addEventListener("message", handleMessage);
+    //     return () => window.removeEventListener("message", handleMessage);
+    // }, []);
+
     return (
         <div>
             <Navi />
 
+            {/* <button onClick={nicepayrq}>Nice Pay 결제</button> */}
             <form onSubmit={handleSubmit}>
 
                 <div className="w-full max-w-3xl mx-auto p-4" style={{ backgroundColor: "#ffffff", maxWidth: "1400px" }}>

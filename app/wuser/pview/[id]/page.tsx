@@ -2,10 +2,10 @@
 
 import axios from "axios";
 import { useRouter, useParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import "@/styles/form.css"; // 스타일 파일 import
-import { REGDATE_STR, WR_STATE_ARR, WR_GENDER_ARR } from "@/app/utils";
+import { REGDATE_STR, WR_STATE_ARR, WR_GENDER_ARR, FORMATAUTHDATE, FORMATCANCELDATE } from "@/app/utils";
 import Navi from "@/components/Navi";
 import { CardFooter } from "@/components/ui/card"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -16,6 +16,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Separator } from "@/components/ui/separator"
 import { User, Users, MapPin, Mail, Phone } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox";
+import InfoItem from "@/components/InfoItem";
 
 interface RsubData {
     wr_seq: number;
@@ -26,6 +27,26 @@ interface RsubData {
     wr_address: string;
     wr_email: string;
     wr_tel: string;
+}
+
+interface PayData {
+    resultcode: string;
+    resultmsg: string;
+    msgsource: string;
+    amt: string;
+    mid: string;
+    moid: string;
+    buyeremail: string;
+    buyertel: string;
+    buyername: string;
+    goodsname: string;
+    tid: string;
+    authcode: string;
+    authdate: string;
+    paymethod: string;
+    canceldate: string;
+    canceltime: string;
+    cancelnum: string;
 }
 
 interface RsvData {
@@ -45,7 +66,8 @@ interface RsvData {
     wr_totinwon: number;
     wr_tourdate: string;
     wr_totprice: number;
-    rsubdatas: RsubData[];
+    rsvsubinfo: RsubData[];
+    payinfo: PayData[];
 }
 
 export default function Rsvedit() {
@@ -55,26 +77,45 @@ export default function Rsvedit() {
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                const res = await axios.get(`/api/wdm/rsvread?id=${id}`);
-                if (res.data && res.data.length > 0) {
-                    setFormData(res.data[0]);
-                } else {
-                    console.error("데이터가 없습니다:", res.data);
-                }
-            } catch (error) {
-                console.error("데이터 불러오기 오류:", error);
-            } finally {
-                setLoading(false);
+    // ✅ fetchData 함수 useCallback으로 추출
+    const fetchData = useCallback(async () => {
+        try {
+            const res = await axios.get(`/api/wdm/rsvread?id=${id}`);
+            if (res.data && res.data.length > 0) {
+                setFormData(res.data[0]);
+            } else {
+                console.error("데이터가 없습니다:", res.data);
             }
+        } catch (error) {
+            console.error("데이터 불러오기 오류:", error);
+        } finally {
+            setLoading(false);
         }
+    }, [id]);
 
+    // ✅ 초기 로딩 시 fetch
+    useEffect(() => {
         if (id) {
             fetchData();
         }
-    }, [id]);
+    }, [id, fetchData]);
+
+    //--########## Nice Pay s ##########--//
+    // ✅ 결제 완료 메시지 수신 시 fetchData만 실행
+    useEffect(() => {
+        const handleMessage = (event: MessageEvent) => {
+            if (event.data?.status === "success") {
+                //alert("결제가 완료되었습니다!");
+                fetchData(); // ✅ 새로고침 대신 데이터만 다시 불러오기
+                setMessage("결제가 완료되었습니다!");
+            }
+        };
+
+        window.addEventListener("message", handleMessage);
+        return () => window.removeEventListener("message", handleMessage);
+    }, [fetchData]);
+    //--########## Nice Pay e ##########--//
+    
 
     if (loading) {
         return <p>로딩 중...</p>;
@@ -83,6 +124,96 @@ export default function Rsvedit() {
     if (!formData) {
         return <p>데이터를 불러오지 못했습니다.</p>;
     }
+
+    //--########## Nice Pay s ##########--//
+    const nicepayrq = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        try {
+            const res = await axios.get("/api/wdm/nicepayrq", {
+                params: {
+                    amt: formData.wr_totprice,
+                    goodsName: formData.wr_shopnm,
+                    moid: formData.wr_code,
+                    buyerName: formData.wr_name,
+                    buyerEmail: formData.wr_email,
+                    buyerTel: formData.wr_tel,
+                },
+                responseType: 'text',
+            });
+
+            // 새 창 열기
+            const popup = window.open("", "_blank", "width=700,height=700");
+            if (popup) {
+                popup.document.open();
+                popup.document.write(res.data);
+                popup.document.close();
+            } else {
+                alert("팝업이 차단되었습니다. 팝업을 허용해주세요.");
+            }
+
+        } catch (error) {
+            console.error("데이터 불러오기 오류:", error);
+        }
+    };
+
+    const nicerefund = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        try {
+            const res = await axios.post("/api/wdm/nicerefund", {
+                tidfield: formData.payinfo[0].tid,
+                moid: formData.payinfo[0].moid,
+                CancelAmt: formData.payinfo[0].amt,
+                //CancelAmt: formData.payinfo[0].amt,
+            });
+
+            console.log("취소결과: ", res.data)
+            fetchData(); // ✅ 새로고침 대신 데이터만 다시 불러오기
+            setMessage("결제취소가 완료되었습니다!");
+
+        } catch (error) {
+            console.error("데이터 불러오기 오류:", error);
+        }
+    };
+    //--########## Nice Pay e ##########--//
+
+    // 승인일시 및 취소일시 여부에 따라 버튼을 렌더링합니다.
+    const renderPaymentButtons = () => {
+        const pay = formData.payinfo?.[0];
+
+        // 결제정보가 아예 없을 경우 => 결제 버튼
+        if (!pay) {
+            return (
+                <button onClick={nicepayrq} className="btn btn-secondary">
+                    Nice Pay 결제
+                </button>
+            );
+        }
+
+        const hasAuthDate = !!pay.authdate;
+        const hasCancelDate = !!pay.canceldate;
+
+        if (!hasAuthDate) {
+            return (
+                <button onClick={nicepayrq} className="btn btn-secondary">
+                    Nice Pay 결제
+                </button>
+            );
+        }
+
+        if (hasAuthDate && !hasCancelDate) {
+            return (
+                <button onClick={nicerefund} className="btn btn-secondary">
+                    Nice Pay 취소
+                </button>
+            );
+        }
+
+        // 취소일시가 있으면 아무 버튼도 안 나옴
+        return null;
+    };
+
 
     return (
         <div>
@@ -100,62 +231,86 @@ export default function Rsvedit() {
 
                         {/* 신청자 정보 */}
                         <div>
-                            <div className="flex items-center mb-1">
-                                <User className="mr-2 h-5 w-5 text-primary" />
-                                <h2 className="text-xl font-semibold">신청자 정보</h2>
+                            <div className="flex items-center justify-between mb-1">
+                                <div className="flex items-center">
+                                    <Users className="mr-2 h-5 w-5 text-primary" />
+                                    <h4 className="text-xl font-semibold">신청자 정보</h4>
+                                </div>
+                                <div className="flex items-center space-x-2" style={{color:"#ff0000"}}>
+                                    {/* <button onClick={nicepayrq} className="btn btn-secondary">Nice Pay 결제</button>&nbsp;
+                                    <button onClick={nicerefund} className="btn btn-secondary">Nice Pay 취소</button> */}
+                                    {message}
+                                    {renderPaymentButtons()}
+                                </div>
                             </div>
                             <Separator className="mb-4 bg-gray-300 dark:bg-gray-600" />
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="wr_name">
-                                        <User className="mr-1 h-4 w-4" />
-                                        이름
-                                    </Label>
-                                    {formData.wr_name}
-                                </div>
+                            <Card className="p-6">
+                                <CardContent>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="이름">
+                                            {formData.wr_name}
+                                        </InfoItem>
 
-                                <div className="space-y-2">
-                                    <Label htmlFor="applicant-age">
-                                        <User className="mr-1 h-4 w-4" />
-                                        나이
-                                    </Label>
-                                    {formData.wr_age}
-                                </div>
+                                        <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="나이">
+                                            {formData.wr_age}
+                                        </InfoItem>
 
-                                <div className="space-y-2">
-                                    <Label htmlFor="wr_gender">
-                                        <User className="mr-1 h-4 w-4" />
-                                        성별
-                                    </Label>
-                                    {WR_GENDER_ARR[formData.wr_gender]}
-                                </div>
+                                        <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="성별">
+                                            {WR_GENDER_ARR[formData.wr_gender]}
+                                        </InfoItem>
 
-                                <div className="space-y-2">
-                                    <Label htmlFor="wr_address" className="flex items-center">
-                                        <MapPin className="mr-1 h-4 w-4" />
-                                        주소
-                                    </Label>
-                                    {formData.wr_address}
-                                </div>
+                                        <InfoItem icon={<MapPin className="mr-2 h-4 w-4" />} label="주소">
+                                            {formData.wr_address}
+                                        </InfoItem>
 
-                                <div className="space-y-2">
-                                    <Label htmlFor="wr_email" className="flex items-center">
-                                        <Mail className="mr-1 h-4 w-4" />
-                                        이메일
-                                    </Label>
-                                    {formData.wr_email}
-                                </div>
+                                        <InfoItem icon={<Mail className="mr-2 h-4 w-4" />} label="이메일">
+                                            {formData.wr_email}
+                                        </InfoItem>
 
-                                <div className="space-y-2">
-                                    <Label htmlFor="wr_tel" className="flex items-center">
-                                        <Phone className="mr-1 h-4 w-4" />
-                                        전화번호
-                                    </Label>
-                                    {formData.wr_tel}
-                                </div>
-                            </div>
+                                        <InfoItem icon={<Phone className="mr-2 h-4 w-4" />} label="전화번호">
+                                            {formData.wr_tel}
+                                        </InfoItem>
+                                    </div>
+                                </CardContent>
+                            </Card>
                         </div>
+
+                        {/* 결제정보 */}
+
+                        {formData.payinfo?.length > 0 && (
+                            <div>
+                                <div className="flex items-center justify-between mb-1">
+                                    <div className="flex items-center">
+                                        <Users className="mr-2 h-5 w-5 text-primary" />
+                                        <h4 className="text-xl font-semibold">결제정보</h4>
+                                    </div>
+                                    <div className="flex items-center space-x-2">
+                                        &nbsp;
+                                    </div>
+                                </div>
+                                <Separator className="mb-4 bg-gray-300 dark:bg-gray-600" />
+
+                                <Card className="p-6">
+                                    <CardContent>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="결제금액">
+                                                {formData.payinfo[0].amt}
+                                            </InfoItem>
+
+                                            <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="승인일시">
+                                                {FORMATAUTHDATE(formData.payinfo[0].authdate)}
+                                            </InfoItem>
+
+                                            <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="취소일시">
+                                                {FORMATCANCELDATE(formData.payinfo[0].canceldate, formData.payinfo[0].canceltime)}
+                                            </InfoItem>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </div>
+                        )}
+
 
                         {/* 여행상품 정보 */}
 
@@ -163,7 +318,7 @@ export default function Rsvedit() {
                             <div className="flex items-center justify-between mb-1">
                                 <div className="flex items-center">
                                     <Users className="mr-2 h-5 w-5 text-primary" />
-                                    <h2 className="text-xl font-semibold">상품 정보</h2>
+                                    <h4 className="text-xl font-semibold">여행상품</h4>
                                 </div>
                                 <div className="flex items-center space-x-2">
                                     &nbsp;
@@ -173,56 +328,35 @@ export default function Rsvedit() {
 
                             {/* 여행상품 */}
 
-                            <div className="mb-6 p-4 border rounded-lg">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="name">
-                                            <User className="mr-1 h-4 w-4" />
-                                            여행일
-                                        </Label>
-                                        {formData.wr_tourdate}
-                                    </div>
+                            <Card className="p-6">
+                                <CardContent>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="여행일">
+                                            {formData.wr_tourdate}
+                                        </InfoItem>
 
-                                    <div className="space-y-2">
-                                        <Label htmlFor="age">
-                                            <User className="mr-1 h-4 w-4" />
-                                            상품명
-                                        </Label>
-                                        {formData.wr_shopnm}
-                                    </div>
+                                        <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="상품명">
+                                            {formData.wr_shopnm}
+                                        </InfoItem>
 
-                                    <div className="space-y-2">
-                                        <Label htmlFor="wr_gender">
-                                            <User className="mr-1 h-4 w-4" />
-                                            옵션명
-                                        </Label>
-                                        {formData.wr_optnm}
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="address" className="flex items-center">
-                                            <MapPin className="mr-1 h-4 w-4" />
-                                            예약인원
-                                        </Label>
-                                        {formData.wr_totinwon.toLocaleString()}명
-                                    </div>
+                                        <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="옵션명">
+                                            {formData.wr_optnm}
+                                        </InfoItem>
 
-                                    <div className="space-y-2">
-                                        <Label htmlFor="tel" className="flex items-center">
-                                            <Phone className="mr-1 h-4 w-4" />
-                                            결제금액
-                                        </Label>
-                                        {formData.wr_totprice.toLocaleString()}
-                                    </div>
+                                        <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="예약인원">
+                                            {formData.wr_totinwon.toLocaleString()}명
+                                        </InfoItem>
 
-                                    <div className="space-y-2">
-                                        <Label htmlFor="tel" className="flex items-center">
-                                            <Phone className="mr-1 h-4 w-4" />
-                                            등록일
-                                        </Label>
-                                        {REGDATE_STR(formData.wr_regdate)}
+                                        <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="결제금액">
+                                            {formData.wr_totprice.toLocaleString()}
+                                        </InfoItem>
+
+                                        <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="등록일">
+                                            {REGDATE_STR(formData.wr_regdate)}
+                                        </InfoItem>
                                     </div>
-                                </div>
-                            </div>
+                                </CardContent>
+                            </Card>
 
                         </div>
 
@@ -232,7 +366,7 @@ export default function Rsvedit() {
                             <div className="flex items-center justify-between mb-1">
                                 <div className="flex items-center">
                                     <Users className="mr-2 h-5 w-5 text-primary" />
-                                    <h2 className="text-xl font-semibold">참가자 정보</h2>
+                                    <h4 className="text-xl font-semibold">참가자 정보</h4>
                                 </div>
                                 <div className="flex items-center space-x-2">
                                     &nbsp;
@@ -244,65 +378,51 @@ export default function Rsvedit() {
 
 
                             {/* 참가자 1 */}
-                            {formData.rsubdatas.map((participant, index) => (
-                                <div className="mb-6 p-4 border rounded-lg" key={index}>
-                                    <h3 className="text-lg font-medium mb-3 flex items-center">
-                                        <span className="inline-flex justify-center items-center w-6 h-6 rounded-full bg-primary text-white text-sm mr-2">
-                                            {index + 1}
-                                        </span>
+                            {formData.rsvsubinfo.map((participant, index) => (
+                                <Card className="p-6" key={index} style={{ marginBottom: "5px" }}>
+                                    <CardContent>
+                                        <h5 className="text-lg font-medium mb-3 flex items-center">
+                                            <span className="inline-flex justify-center items-center w-6 h-6 rounded-full bg-primary text-white text-sm mr-2">
+                                                {index + 1}
+                                            </span>
 
-                                        참가자 정보
-                                    </h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="name">
-                                                <User className="mr-1 h-4 w-4" />
-                                                이름
-                                            </Label>
-                                            {participant.wr_name}
-                                        </div>
+                                            참가자 정보
+                                        </h5>
 
-                                        <div className="space-y-2">
-                                            <Label htmlFor="age">
-                                                <User className="mr-1 h-4 w-4" />
-                                                나이
-                                            </Label>
-                                            {participant.wr_age}
-                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="이름">
+                                                {participant.wr_name}
+                                            </InfoItem>
 
-                                        <div className="space-y-2">
-                                            <Label htmlFor="wr_gender">
-                                                <User className="mr-1 h-4 w-4" />
-                                                성별
-                                            </Label>
-                                            {WR_GENDER_ARR[participant.wr_gender]}
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label htmlFor="address" className="flex items-center">
-                                                <MapPin className="mr-1 h-4 w-4" />
-                                                주소
-                                            </Label>
-                                            {participant.wr_address}
-                                        </div>
+                                            <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="나이">
+                                                {participant.wr_age}
+                                            </InfoItem>
 
-                                        <div className="space-y-2">
-                                            <Label htmlFor="tel" className="flex items-center">
-                                                <Phone className="mr-1 h-4 w-4" />
-                                                전화번호
-                                            </Label>
-                                            {participant.wr_tel}
+                                            <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="성별">
+                                                {WR_GENDER_ARR[participant.wr_gender]}
+                                            </InfoItem>
+
+                                            <InfoItem icon={<MapPin className="mr-2 h-4 w-4" />} label="주소">
+                                                {participant.wr_address}
+                                            </InfoItem>
+
+                                            <InfoItem icon={<Phone className="mr-2 h-4 w-4" />} label="전화번호">
+                                                {participant.wr_tel}
+                                            </InfoItem>
                                         </div>
-                                    </div>
-                                </div>
+                                    </CardContent>
+                                </Card>
                             ))}
                         </div>
 
-                        <div style={{textAlign:"center"}}><Link href={`/wuser/plist/`} className="btn btn-sm btn-primary mx-2">목록</Link></div>
+                        <div style={{ textAlign: "center" }}>
+                            <Link href={`/wuser/plist/`} className="btn btn-sm btn-primary mx-2">목록</Link>
+                        </div>
                     </CardContent>
-                    
+
                 </Card>
 
-                
+
             </div>
         </div>
     );

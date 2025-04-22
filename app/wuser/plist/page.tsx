@@ -43,7 +43,7 @@ export default function Plist() {
     const [currentPage, setCurrentPage] = useState(1)
     const itemsPerPage = 5
 
-    
+
 
     useEffect(() => {
         const fetchReservations = async () => {
@@ -97,38 +97,41 @@ export default function Plist() {
                         </div>
                     </div>
 
-                    <div className="rounded-md border">
-                        <Table>
-                            <TableHeader>
-                                <TableRow className="border-b border-gray-300">
-                                    <TableHead className="w-[60px] text-center">번호</TableHead>
-                                    <TableHead>여행일</TableHead>
-                                    <TableHead className="min-w-[150px]">상품명</TableHead>
-                                    <TableHead className="min-w-[120px]">옵션명</TableHead>
-                                    <TableHead>이름</TableHead>
-                                    <TableHead>연락처</TableHead>
-                                    <TableHead className="text-center">총인원</TableHead>
-                                    <TableHead className="text-right">결제금액</TableHead>
-                                    <TableHead>진행상태</TableHead>
-                                    <TableHead>등록일</TableHead>
-                                    <TableHead className="text-center">관리</TableHead>
+                    <div className="rounded-xl border border-gray-300 shadow-sm overflow-x-auto">
+                        <Table className="min-w-[900px] text-sm text-gray-700">
+                            <TableHeader className="bg-gray-100 text-gray-800">
+                                <TableRow>
+                                    <TableHead className="w-[60px] text-center px-3 py-2">번호</TableHead>
+                                    <TableHead className="px-3 py-2">여행일</TableHead>
+                                    <TableHead className="min-w-[150px] px-3 py-2">상품명</TableHead>
+                                    <TableHead className="min-w-[120px] px-3 py-2">옵션명</TableHead>
+                                    <TableHead className="px-3 py-2">이름</TableHead>
+                                    <TableHead className="px-3 py-2">연락처</TableHead>
+                                    <TableHead className="text-center px-3 py-2">총인원</TableHead>
+                                    <TableHead className="text-right px-3 py-2">결제금액</TableHead>
+                                    <TableHead className="px-3 py-2">진행상태</TableHead>
+                                    <TableHead className="px-3 py-2">등록일</TableHead>
+                                    <TableHead className="text-center px-3 py-2">관리</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {reservations.length > 0 ? (
-                                    reservations.map((item) => (
-                                        <TableRow key={item.wr_seq} className="border-b border-gray-300">
-                                            <TableCell className="text-center font-medium">{item.wr_seq}</TableCell>
-                                            <TableCell>{item.wr_tourdate}</TableCell>
-                                            <TableCell>{item.wr_shopnm}</TableCell>
-                                            <TableCell>{item.wr_optnm}</TableCell>
-                                            <TableCell>{item.wr_name}</TableCell>
-                                            <TableCell>{item.wr_tel}</TableCell>
-                                            <TableCell className="text-center">{item.wr_totinwon.toLocaleString()}명</TableCell>
-                                            <TableCell className="text-right">{item.wr_totprice.toLocaleString()}</TableCell>
-                                            <TableCell>{WR_STATE_ARR[item.wr_state]}</TableCell>
-                                            <TableCell>{REGDATE_STR(item.wr_regdate)}</TableCell>
-                                            <TableCell>
+                                    reservations.map((item, index) => (
+                                        <TableRow
+                                            key={item.wr_seq}
+                                            className={index % 2 === 0 ? "bg-white hover:bg-gray-50" : "bg-gray-50 hover:bg-gray-100"}
+                                        >
+                                            <TableCell className="text-center font-medium px-3 py-2">{item.wr_seq}</TableCell>
+                                            <TableCell className="px-3 py-2">{item.wr_tourdate}</TableCell>
+                                            <TableCell className="px-3 py-2">{item.wr_shopnm}</TableCell>
+                                            <TableCell className="px-3 py-2">{item.wr_optnm}</TableCell>
+                                            <TableCell className="px-3 py-2">{item.wr_name}</TableCell>
+                                            <TableCell className="px-3 py-2">{item.wr_tel}</TableCell>
+                                            <TableCell className="text-center px-3 py-2">{item.wr_totinwon.toLocaleString()}명</TableCell>
+                                            <TableCell className="text-right px-3 py-2">{item.wr_totprice.toLocaleString()}</TableCell>
+                                            <TableCell className="px-3 py-2">{WR_STATE_ARR[item.wr_state]}</TableCell>
+                                            <TableCell className="px-3 py-2">{REGDATE_STR(item.wr_regdate)}</TableCell>
+                                            <TableCell className="text-center px-3 py-2">
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger asChild>
                                                         <Button variant="ghost" className="h-8 w-8 p-0">
@@ -136,21 +139,15 @@ export default function Plist() {
                                                             <MoreHorizontal className="h-4 w-4" />
                                                         </Button>
                                                     </DropdownMenuTrigger>
-                                                    <DropdownMenuContent align="end">
+                                                    <DropdownMenuContent align="end" className="bg-white shadow-md rounded-md p-2">
                                                         <DropdownMenuLabel>작업</DropdownMenuLabel>
                                                         <DropdownMenuSeparator />
                                                         <DropdownMenuItem className="flex items-center">
                                                             <Eye className="mr-2 h-4 w-4" />
-                                                            <span><Link href={`/wuser/pview/${item.wr_code}`} className="btn btn-sm btn-primary mx-2">상세보기</Link></span>
+                                                            <Link href={`/wuser/pview/${item.wr_code}`} className="text-blue-600 hover:underline">
+                                                                상세보기
+                                                            </Link>
                                                         </DropdownMenuItem>
-                                                        {/* <DropdownMenuItem className="flex items-center">
-                                                            <Edit className="mr-2 h-4 w-4" />
-                                                            <span>수정하기</span>
-                                                        </DropdownMenuItem>
-                                                        <DropdownMenuItem className="flex items-center text-red-600">
-                                                            <Trash className="mr-2 h-4 w-4" />
-                                                            <span>삭제하기</span>
-                                                        </DropdownMenuItem> */}
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>
                                             </TableCell>
@@ -158,7 +155,7 @@ export default function Plist() {
                                     ))
                                 ) : (
                                     <TableRow>
-                                        <TableCell colSpan={11} className="h-24 text-center">
+                                        <TableCell colSpan={11} className="h-24 text-center text-gray-500">
                                             검색 결과가 없습니다.
                                         </TableCell>
                                     </TableRow>
@@ -167,8 +164,9 @@ export default function Plist() {
                         </Table>
                     </div>
 
+
                     {/* 페이지네이션 */}
-                    
+
                 </div>
             </main>
         </div>

@@ -11,9 +11,28 @@ import { Button } from "@/components/ui/button"
 import Navi from "@/components/Navi";
 import { REGDATE_STR, REGDATE_YMD_STR } from "@/app/utils";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+interface FileData {
+    file_seq: number;
+    wr_code: string;
+    file_path: string;
+}
+interface OptData {
+    wr_optnm: string;
+}
+
 interface ShopData {
     wr_shopnm: string;
     wr_price: number;
+    wr_intro: string;
+    wr_content: string;
+    wr_include: string;
+    wr_noinclude: string;
+    wr_note: string;
+    files: FileData[];
+    aopt: OptData[];
+    aopttotinwon: number;
 }
 
 export default function Uview() {
@@ -26,7 +45,6 @@ export default function Uview() {
     } | null>(null);
 
     const [shopData, setShopData] = useState<ShopData[]>([]);
-    const [optnm, setOptnm] = useState("");
     const [formData, setFormData] = useState({
         wr_shopcode: "",
         wr_shopnm: "",
@@ -48,39 +66,62 @@ export default function Uview() {
     }, [router]);
 
     useEffect(() => {
-        async function fetchData() {
-            if (reservationData?.shopcode) {
+        async function viewData() {
+            if (reservationData?.shopcode && reservationData?.optcode) {
                 try {
-                    const res = await axios.get(`/api/wdm/wrshopnm?id=${reservationData.shopcode}`);
+                    const res = await axios.post(`/api/wdm/sview`, {
+                        wr_shopcode: reservationData.shopcode,
+                        wr_optcode: reservationData.optcode,
+                    });
+
                     if (Array.isArray(res.data)) {
                         setShopData(res.data);
                     } else {
-                        console.error("wr_shopnm 데이터 형식이 올바르지 않습니다:", res.data);
+                        console.error("데이터 형식 오류:", res.data);
                     }
                 } catch (error) {
-                    console.error("wr_shopnm 불러오기 오류:", error);
+                    console.error("데이터 불러오기 오류:", error);
                 }
             }
         }
 
-        async function optnmData() {
-            if (reservationData?.optcode) {
-                try {
-                    const res = await axios.get(`/api/wdm/wroptnm?id=${reservationData.optcode}`);
-                    if (res.data && res.data.length > 0) {
-                        setOptnm(res.data[0].wr_optnm); // wr_optnm 값만 저장
-                    } else {
-                        console.error("wr_optnm 없습니다:", res.data);
-                    }
-                } catch (error) {
-                    console.error("wr_optnm 불러오기 오류:", error);
-                }
-            }
-        }
-
-        fetchData();
-        optnmData();
+        viewData();
     }, [reservationData]);
+
+    // useEffect(() => {
+    //     async function fetchData() {
+    //         if (reservationData?.shopcode) {
+    //             try {
+    //                 const res = await axios.get(`/api/wdm/wrshopnm?id=${reservationData.shopcode}`);
+    //                 if (Array.isArray(res.data)) {
+    //                     setShopData(res.data);
+    //                 } else {
+    //                     console.error("wr_shopnm 데이터 형식이 올바르지 않습니다:", res.data);
+    //                 }
+    //             } catch (error) {
+    //                 console.error("wr_shopnm 불러오기 오류:", error);
+    //             }
+    //         }
+    //     }
+
+    //     async function optnmData() {
+    //         if (reservationData?.optcode) {
+    //             try {
+    //                 const res = await axios.get(`/api/wdm/wroptnm?id=${reservationData.optcode}`);
+    //                 if (res.data && res.data.length > 0) {
+    //                     setOptnm(res.data[0].wr_optnm); // wr_optnm 값만 저장
+    //                 } else {
+    //                     console.error("wr_optnm 없습니다:", res.data);
+    //                 }
+    //             } catch (error) {
+    //                 console.error("wr_optnm 불러오기 오류:", error);
+    //             }
+    //         }
+    //     }
+
+    //     fetchData();
+    //     optnmData();
+    // }, [reservationData]);
 
     // `reservationData`와 `shopData`가 업데이트되면 `formData`도 업데이트
     useEffect(() => {
@@ -89,7 +130,7 @@ export default function Uview() {
                 wr_shopcode: reservationData.shopcode || "",
                 wr_shopnm: shopData[0]?.wr_shopnm || "",
                 wr_optcode: reservationData.optcode || "",
-                wr_optnm: optnm || "",
+                wr_optnm: shopData[0]?.aopt[0].wr_optnm || "",
                 wr_tourdate: reservationData.rsvymd || "",
                 wr_totinwon: reservationData.rsvinwon || 0,
                 wr_price: shopData[0]?.wr_price || 0,
@@ -98,12 +139,12 @@ export default function Uview() {
                     : 0,
             });
         }
-    }, [reservationData, shopData, optnm]);
+    }, [reservationData, shopData]);
 
     console.log("shopData: ", shopData)
-    console.log("optnm: ", optnm)
-    console.log("reservationData: ", reservationData)
-    console.log("formData: ", formData)
+    // console.log("optnm: ", optnm)
+    // console.log("reservationData: ", reservationData)
+    // console.log("formData: ", formData)
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -141,11 +182,14 @@ export default function Uview() {
                     <CardHeader>
                         <div className="flex flex-col md:flex-row gap-4 md:items-center">
                             <div className="relative w-full md:w-1/3 aspect-video rounded-lg overflow-hidden">
-                                <Image src="/img/nature-2.jpg"
-                                    alt="만년의 비밀을 찾아서 - 동굴 탐험 프로그램"
-                                    fill
-                                    className="object-cover"
-                                />
+                                
+                                {(() => {
+                                    const imageUrl = encodeURIComponent(`${API_BASE_URL}${shopData[0]?.files[0].file_path ?? ""}`);
+                                    return (
+                                        <img src={`/api/wdm/image-proxy?url=${imageUrl}`} alt="Gallery Image" className="object-cover" />
+                                    );
+                                })()}
+
                             </div>
                             <div className="flex-1">
                                 <CardTitle className="text-2xl">{formData.wr_shopnm}</CardTitle>
@@ -155,7 +199,7 @@ export default function Uview() {
                                 </CardDescription>
                                 <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
                                     <Users className="h-4 w-4" />
-                                    <span>최대 30명 참여 가능</span>
+                                    <span>최대 {shopData[0]?.aopttotinwon ?? 0}명 참여 가능</span>
                                 </div>
                             </div>
                         </div>
@@ -163,9 +207,7 @@ export default function Uview() {
                     <CardContent>
                         <div className="prose max-w-none">
                             <p>
-                                동굴 전문가와 함께하는 이색적인 동굴 탐험으로, 거문오름용암동굴계의 대표 동굴인 김녕굴과 벵뒤굴을 체험하는
-                                프로그램입니다. 칠흑 같은 어둠 속에서 일반인들에게 공개되지 않는 동굴의 깊은 곳을 경험하며, 세계자연유산의
-                                비밀을 파헤쳐 보세요.
+                                {shopData[0]?.wr_intro ?? ""}
                             </p>
                         </div>
                     </CardContent>
