@@ -161,8 +161,12 @@ export default function Ucalendar() {
         const weeks: React.ReactElement[] = [];
         let days: React.ReactElement[] = [];
 
+        const createDayCell = (key: string | number, content?: React.ReactNode) => (
+            <td key={key} className="bg-gray-100 h-[110px] border border-gray-300"></td>
+        );
+
         for (let i = 0; i < firstDay; i++) {
-            days.push(<td key={`empty-${i}`} className="empty"></td>);
+            days.push(createDayCell(`empty-${i}`));
         }
 
         for (let day = 1; day <= daysInMonth; day++) {
@@ -171,37 +175,45 @@ export default function Ucalendar() {
             const reserved = dailyReservedTotal[dateStr] || 0;
             const available = total - reserved;
 
-            const dayOfWeek = (firstDay + day - 1) % 7; // 요일 계산 (0:일요일 ~ 6:토요일)
-            let textColor = "";
-            if (dayOfWeek === 0) textColor = "red"; // 일요일
-            if (dayOfWeek === 6) textColor = "blue"; // 토요일
+            const dayOfWeek = (firstDay + day - 1) % 7;
+            const isSunday = dayOfWeek === 0;
+            const isSaturday = dayOfWeek === 6;
+
+            const isSelected = selectedDate === dateStr;
 
             days.push(
                 <td
                     key={day}
-                    className={`day ${selectedDate === dateStr ? "selected" : ""}`}
                     onClick={() => handleDateClick(day)}
-                    style={{ height: "110px", color: textColor }}
+                    className={`
+                        h-[110px] border border-gray-300 align-top p-1 cursor-pointer transition
+                        ${isSelected ? "bg-orange-100 border-orange-400" : "bg-white hover:bg-gray-50"}
+                        ${isSunday ? "text-red-500" : isSaturday ? "text-blue-500" : "text-gray-800"}
+                    `}
                 >
-                    {day}
-                    <br />
-                    <span style={{ color: '#000000' }}>
-                        <small>최대 {total}명 / 예약됨 {reserved}명 / 가능 {available}명</small>
-                    </span>
+                    <div className="font-semibold">{day}</div>
+                    <div className="mt-1 text-xs text-gray-600 bg-gray-100 rounded p-1 leading-snug">
+                        최대 {total}명<br />
+                        예약됨 {reserved}명<br />
+                        가능 {available}명
+                    </div>
                 </td>
             );
 
             if ((firstDay + day) % 7 === 0 || day === daysInMonth) {
                 while (days.length < 7) {
-                    days.push(<td key={`empty-last-${days.length}`} className="empty"></td>);
+                    days.push(createDayCell(`empty-last-${days.length}`));
                 }
-                weeks.push(<tr key={weeks.length}>{days}</tr>);
+                weeks.push(<tr key={`week-${weeks.length}`}>{days}</tr>);
                 days = [];
             }
         }
 
-        return <>{weeks}</>; // ✅ `React.Fragment`로 감싸서 불필요한 개행 제거
+        return weeks;
     };
+
+
+
 
     const handleSelectChange = (optcode: string, value: number) => {
         setSelectedInwonMap((prev) => ({
@@ -214,75 +226,87 @@ export default function Ucalendar() {
         <div>
             <Navi />
 
-            <div className="w_calendar_wrap">
+            <div className="px-4 py-10">
+                <div className="max-w-[1400px] mx-auto w-full">
 
-                <div className="cal_info_wrap">
-                    <button onClick={handlePrevMonth}>◀ 이전달</button>
-                    <span>{currentYear}년 {String(currentMonth + 1).padStart(2, "0")}월</span>
-                    <button onClick={handleNextMonth}>다음달 ▶</button>
-                </div>
+                    {/* 달력 카드형 컨테이너 */}
+                    <div className="bg-white rounded-xl shadow-lg p-6 md:p-8 transition-all">
+                        <div className="flex items-center justify-between mb-6">
+                            <button
+                                onClick={handlePrevMonth}
+                                className="text-sm px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100"
+                            >
+                                ◀ 이전달
+                            </button>
+                            <span className="text-xl font-semibold text-gray-800">
+                                {currentYear}년 {String(currentMonth + 1).padStart(2, "0")}월
+                            </span>
+                            <button
+                                onClick={handleNextMonth}
+                                className="text-sm px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100"
+                            >
+                                다음달 ▶
+                            </button>
+                        </div>
 
-                <table className="calendar">
-                    <thead>
-                        <tr>
-                            <th>일</th> <th>월</th> <th>화</th> <th>수</th> <th>목</th> <th>금</th> <th>토</th>
-                        </tr>
-                    </thead>
-                    <tbody>{generateCalendar()}</tbody>
-                </table>
+                        {/* 달력 테이블 */}
+                        <div className="overflow-x-auto">
+                            <table className="w-full border-collapse text-center">
+                                <thead>
+                                    <tr className="bg-gray-100 text-gray-700 text-sm">
+                                        <th className="py-2">일</th>
+                                        <th className="py-2">월</th>
+                                        <th className="py-2">화</th>
+                                        <th className="py-2">수</th>
+                                        <th className="py-2">목</th>
+                                        <th className="py-2">금</th>
+                                        <th className="py-2">토</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="text-sm">
+                                    {generateCalendar()}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
 
-                {selectedDate && (
-                    <div className="reservation">
-                        <div className="w_rsvdate_font">{REGDATE_YMD_STR(selectedDate)} 예약 가능 옵션</div>
-                        <div className="w_rsvdate_font2">시간별 가능 인원</div>
+                    {/* 선택된 날짜 관련 옵션 표시 영역 */}
+                    {selectedDate && (
+                        <div className="bg-white rounded-xl shadow-lg p-6 mt-8">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-2">{REGDATE_YMD_STR(selectedDate)} 예약 가능 옵션</h3>
+                            <p className="text-sm text-gray-500 mb-4">시간별 가능 인원</p>
 
-                        {/* ✅ 첫 번째 영역: 옵션 리스트만 노출 */}
+                            {optData.length > 0 ? (
+                                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    {optData.map((option) => {
+                                        const maxAvailable = option.wr_inwon - (option.reserved_inwon || 0);
+                                        const isSelected = selectedOptionCode === option.wr_optcode;
+                                        let btnStyle = "bg-gray-100 text-gray-700";
+                                        if (maxAvailable <= 0) btnStyle = "bg-red-100 text-red-600 line-through";
+                                        else if (isSelected) btnStyle = "bg-orange-100 border border-orange-500 text-orange-700";
 
-                        {optData.length > 0 ? (
-                            <div className="w_rsvbtn_wrap">
-                                {optData.map((option, idx) => {
-                                    const maxAvailable = option.wr_inwon - (option.reserved_inwon || 0);
-                                    const isSelected = selectedOptionCode === option.wr_optcode;
+                                        return (
+                                            <div
+                                                key={option.wr_optcode}
+                                                className={`rounded-md p-4 text-sm ${btnStyle} cursor-pointer`}
+                                                onClick={() => {
+                                                    if (maxAvailable > 0) setSelectedOptionCode(option.wr_optcode);
+                                                }}
+                                            >
+                                                <strong className="block mb-1">{option.wr_optnm}</strong>
+                                                {/* <p>(최대 {option.wr_inwon}명)</p>
+                                                <p>예약됨 {option.reserved_inwon}명</p> */}
+                                                <p>{maxAvailable <= 0 ? "마감" : `가능 ${maxAvailable}명`}</p>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            ) : (
+                                <p className="text-sm text-gray-600">예약 가능한 옵션이 없습니다.</p>
+                            )}
 
-                                    // ✅ 조건별 class 설정
-                                    let btnClass = "w_rsvbtn_off";
-                                    if (maxAvailable <= 0) {
-                                        btnClass = "w_rsvbtn_deadline";
-                                    } else if (isSelected) {
-                                        btnClass = "w_rsvbtn_on";
-                                    }
-
-                                    return (
-                                        <div
-                                            key={option.wr_optcode}
-                                            className={btnClass}
-                                            style={{ cursor: maxAvailable > 0 ? "pointer" : "default" }}
-                                            onClick={() => {
-                                                if (maxAvailable > 0) {
-                                                    setSelectedOptionCode(option.wr_optcode);
-                                                }
-                                            }}
-                                        >
-
-                                            <span style={{fontWeight:"700"}}>{option.wr_optnm}</span><br />
-                                            (최대 {option.wr_inwon}명)<br />
-                                            예약됨 {option.reserved_inwon}명<br />
-                                            {maxAvailable <= 0
-                                                ? "마감"
-                                                : `가능 ${maxAvailable}명`}
-
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        ) : (
-                            <p>예약 가능한 옵션이 없습니다.</p>
-                        )}
-
-
-
-                        {/* ✅ 두 번째 영역: 특정 옵션을 선택한 경우 select + 예약 버튼 표시 */}
-                        {selectedOptionCode && (
+                            {/* 옵션 선택 후 예약 영역 */}
+                            {selectedOptionCode && (
                             <div className="reservation-detail">
                                 <hr />
                                 {(() => {
@@ -346,14 +370,12 @@ export default function Ucalendar() {
                                 })()}
                             </div>
                         )}
-                    </div>
-                )}
+                        </div>
+                    )}
 
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-
+                </div>
             </div>
+
         </div>
     );
 }

@@ -182,7 +182,7 @@ export default function Uview() {
                     <CardHeader>
                         <div className="flex flex-col md:flex-row gap-4 md:items-center">
                             <div className="relative w-full md:w-1/3 aspect-video rounded-lg overflow-hidden">
-                                
+
                                 {(() => {
                                     const imageUrl = encodeURIComponent(`${API_BASE_URL}${shopData[0]?.files[0].file_path ?? ""}`);
                                     return (
@@ -297,108 +297,56 @@ export default function Uview() {
                                 프로그램 설명
                             </h3>
                             <div className="prose max-w-none">
-                                <p>
-                                    동굴 전문가와 함께하는 이색적인 동굴 탐험으로, 거문오름용암동굴계의 대표 동굴인 김녕굴과 벵뒤굴을
-                                    체험하는 프로그램입니다. 칠흑 같은 어둠 속에서 일반인들에게 공개되지 않는 동굴의 깊은 곳을 경험하며,
-                                    세계자연유산의 비밀을 파헤쳐 보세요.
-                                </p>
-                                <p className="mt-4">
-                                    사전예약을 통한 탐방객 동굴 투어 프로그램 전체 인솔투어로 진행 벵뒤굴+김녕굴 연계 프로그램,
-                                </p>
+                                
+                                <div
+                                    dangerouslySetInnerHTML={{
+                                        __html: shopData[0]?.wr_content || "",
+                                    }}
+                                ></div>
+
                             </div>
-                            <div className="mt-6 flex justify-center">
-                                <Button size="lg">
-                                    자세히 보기
-                                </Button>
-                            </div>
+                            
                         </div>
 
                         {/* 포함 사항 */}
                         <div className="bg-white rounded-lg border p-6">
-                            <h3 className="text-lg font-medium mb-4 flex items-center gap-2">
+                            <h4 className="text-lg font-medium mb-4 flex items-center gap-2">
                                 <span className="bg-primary/10 text-primary p-1.5 rounded-md">
                                     <Users className="h-5 w-5" />
                                 </span>
                                 포함 사항
-                            </h3>
-                            <ul className="space-y-2">
-                                <li className="flex items-start gap-2">
-                                    <span className="text-primary mt-1">•</span>
-                                    <span>전문 트레킹 가이드</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-primary mt-1">•</span>
-                                    <span>입산 허가증 발급 대행</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-primary mt-1">•</span>
-                                    <span>간단한 간식 및 물</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-primary mt-1">•</span>
-                                    <span>여행자 보험</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-primary mt-1">•</span>
-                                    <span>왕복 교통편 (지정된 호텔 픽업 및 드롭)</span>
-                                </li>
-                            </ul>
+                            </h4>
+
+                            <div className="whitespace-pre-line">
+                                {shopData[0]?.wr_include}
+                            </div>
+
                         </div>
 
                         {/* 불포함 사항 */}
                         <div className="bg-white rounded-lg border p-6">
-                            <h3 className="text-lg font-medium mb-4 flex items-center gap-2">
+                            <h4 className="text-lg font-medium mb-4 flex items-center gap-2">
                                 <span className="bg-primary/10 text-primary p-1.5 rounded-md">
                                     <Calendar className="h-5 w-5" />
                                 </span>
                                 불포함 사항
-                            </h3>
-                            <ul className="space-y-2">
-                                <li className="flex items-start gap-2">
-                                    <span className="text-primary mt-1">•</span>
-                                    <span>개인 장비 (등산화, 등산복 등)</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-primary mt-1">•</span>
-                                    <span>중식 (개인 도시락 지참 권장)</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-primary mt-1">•</span>
-                                    <span>개인 경비</span>
-                                </li>
-                            </ul>
+                            </h4>
+                            <div className="whitespace-pre-line">
+                                {shopData[0]?.wr_noinclude}
+                            </div>
                         </div>
 
                         {/* 유의 사항 */}
                         <div className="bg-white rounded-lg border p-6">
-                            <h3 className="text-lg font-medium mb-4 flex items-center gap-2">
+                            <h4 className="text-lg font-medium mb-4 flex items-center gap-2">
                                 <span className="bg-primary/10 text-primary p-1.5 rounded-md">
                                     <AlertTriangle className="h-5 w-5" />
                                 </span>
                                 유의 사항
-                            </h3>
-                            <ul className="space-y-2">
-                                <li className="flex items-start gap-2">
-                                    <span className="text-primary mt-1">•</span>
-                                    <span>기상 상황에 따라 투어가 취소될 수 있습니다. (전액 환불 또는 일정 변경)</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-primary mt-1">•</span>
-                                    <span>출발 3일 전까지 취소 시 전액 환불, 2일 전 80%, 1일 전 50%, 당일 취소 시 환불 불가</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-primary mt-1">•</span>
-                                    <span>건강에 이상이 있거나 등산이 어려운 경우 참여를 자제해 주시기 바랍니다.</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-primary mt-1">•</span>
-                                    <span>투어 시작 10분 전까지 집합 장소에 도착해주세요.</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-primary mt-1">•</span>
-                                    <span>개인 쓰레기는 반드시 되가져가는 에코 트레킹입니다.</span>
-                                </li>
-                            </ul>
+                            </h4>
+                            <div className="whitespace-pre-line">
+                                {shopData[0]?.wr_note}
+                            </div>
                         </div>
                     </div>
                 </div>
