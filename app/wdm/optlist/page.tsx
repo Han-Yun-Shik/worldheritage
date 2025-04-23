@@ -67,15 +67,21 @@ export default function Slist() {
 
     return (
         <div>
-            <h1>옵션 목록</h1>
+            <div className="w_con_navi_wrap">
+                <div className="w_con_title">옵션 목록</div>
+                <div style={{ textAlign: "right" }}>
+                    <Link href="/wdm/optwrite" className="btn btn-secondary">등록</Link>
+                </div>
+            </div>
+
             <table className="table">
                 <thead className="table-secondary">
                     <tr>
-                        <th style={{ textAlign: "center" }}>번호</th>
-                        <th style={{ textAlign: "center" }}>상품명</th>
-                        <th style={{ textAlign: "center" }}>옵션명</th>
-                        <th style={{ textAlign: "center" }}>인원</th>
-                        <th style={{ textAlign: "center" }}>관리</th>
+                        <th style={{ textAlign: "center", width: "70px", fontWeight: "400" }}>번호</th>
+                        <th style={{ textAlign: "center", fontWeight: "400" }}>상품명</th>
+                        <th style={{ textAlign: "center", width: "250px", fontWeight: "400" }}>옵션명</th>
+                        <th style={{ textAlign: "center", width: "70px", fontWeight: "400" }}>인원</th>
+                        <th style={{ textAlign: "center", width: "200px", fontWeight: "400" }}>관리</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -85,7 +91,7 @@ export default function Slist() {
                             <td style={{ textAlign: "left" }}>
                                 {item.shopargs ? item.shopargs.wr_shopnm : "정보 없음"}
                             </td>
-                            <td style={{ textAlign: "left" }}>{item.wr_optnm}</td>
+                            <td style={{ textAlign: "center" }}>{item.wr_optnm}</td>
                             <td style={{ textAlign: "center" }}>{item.wr_inwon.toLocaleString()}</td>
                             <td style={{ textAlign: "center" }}>
                                 <Link href={`/wdm/optupdate/${item.wr_optcode}`} className="btn btn-sm btn-primary mx-2">

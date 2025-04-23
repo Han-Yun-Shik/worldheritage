@@ -3,6 +3,7 @@
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Link from "next/link";
 import "@/styles/form.css"; // 스타일 파일 import
 
 export default function Swrite() {
@@ -60,10 +61,16 @@ export default function Swrite() {
 
     return (
         <div>
-            <h1>상품 등록</h1>
-            <form onSubmit={handleSubmit}>
+            <div className="w_con_navi_wrap">
+                <div className="w_con_title">여행상품 등록</div>
+                <div style={{ textAlign: "right" }}>
+                    <button onClick={handleSubmit} className="btn btn-secondary">등록</button>&nbsp;
+                    <Link href="/wdm/slist" className="btn btn-secondary">목록</Link>
+                </div>
+            </div>
+            <form onSubmit={handleSubmit} className="w-full space-y-6 p-6 bg-white rounded-lg shadow">
                 <div>
-                    <label htmlFor="wr_name">상품명:</label>
+                <label htmlFor="wr_shopnm" className="block text-sm font-medium text-gray-700">상품명</label>
                     <input
                         type="text"
                         name="wr_shopnm"
@@ -73,7 +80,7 @@ export default function Swrite() {
                     />
                 </div>
                 <div>
-                    <label htmlFor="wr_intro">간략소개:</label>
+                <label htmlFor="wr_intro" className="block text-sm font-medium text-gray-700">간략소개</label>
                     <input
                         type="text"
                         name="wr_intro"
@@ -83,16 +90,17 @@ export default function Swrite() {
                     />
                 </div>
                 <div>
-                    <label htmlFor="wr_content">상세소개:</label>
+                <label htmlFor="wr_content" className="block text-sm font-medium text-gray-700">상세소개</label>
                     <textarea
                         name="wr_content"
                         id="wr_content"
+                        rows={20}
                         onChange={handleChange}
                         className="w_form_textarea"
                     />
                 </div>
                 <div>
-                    <label htmlFor="wr_include">포함사항:</label>
+                <label htmlFor="wr_include" className="block text-sm font-medium text-gray-700">포함사항</label>
                     <textarea
                         name="wr_include"
                         id="wr_include"
@@ -101,7 +109,7 @@ export default function Swrite() {
                     />
                 </div>
                 <div>
-                    <label htmlFor="wr_noinclude">불포함사항:</label>
+                <label htmlFor="wr_noinclude" className="block text-sm font-medium text-gray-700">불포함사항</label>
                     <textarea
                         name="wr_noinclude"
                         id="wr_noinclude"
@@ -110,7 +118,7 @@ export default function Swrite() {
                     />
                 </div>
                 <div>
-                    <label htmlFor="wr_note">유의사항:</label>
+                <label htmlFor="wr_note" className="block text-sm font-medium text-gray-700">유의사항</label>
                     <textarea
                         name="wr_note"
                         id="wr_note"
@@ -119,7 +127,7 @@ export default function Swrite() {
                     />
                 </div>
                 <div>
-                    <label htmlFor="wr_name">금액:</label>
+                <label htmlFor="wr_price" className="block text-sm font-medium text-gray-700">금액</label>
                     <input
                         type="number"
                         name="wr_price"
@@ -129,10 +137,19 @@ export default function Swrite() {
                     />
                 </div>
                 <div>
-                    <label htmlFor="addfile1">이미지: </label>
+                <label htmlFor="addfile1" className="block text-sm font-medium text-gray-700">이미지 </label>
                     <input type="file" name="addfile1" id="addfile1" onChange={handleChange} className="w_form_file" />
                 </div>
-                <button type="submit" className="w_btn_submit">전송</button>
+                
+                <div className="pt-4">
+                    <button
+                        type="submit"
+                        className="w-full inline-flex justify-center rounded-md bg-blue-600 px-4 py-2 text-white font-medium hover:bg-blue-700 transition"
+                    >
+                        전송
+                    </button>
+                </div>
+                
                 {message && <p>{message}</p>}
             </form>
         </div>

@@ -68,21 +68,27 @@ export default function Rsvlist() {
 
     return (
         <div>
-            <h1>예약 목록</h1>
+            <div className="w_con_navi_wrap">
+                <div className="w_con_title">예약 관리</div>
+                <div style={{ textAlign: "right" }}>
+                    <Link href="" className="btn btn-secondary">검색</Link>
+                </div>
+            </div>
+
             <table className="table">
                 <thead className="table-secondary">
                     <tr>
-                        <th style={{ textAlign: "center" }}>번호</th>
-                        <th style={{ textAlign: "center" }}>여행일</th>
-                        <th style={{ textAlign: "center" }}>상품명</th>
-                        <th style={{ textAlign: "center" }}>옵션명</th>
-                        <th style={{ textAlign: "center" }}>이름</th>
-                        <th style={{ textAlign: "center" }}>연락처</th>
-                        <th style={{ textAlign: "center" }}>총인원</th>
-                        <th style={{ textAlign: "center" }}>결제금액</th>
-                        <th style={{ textAlign: "center" }}>진행상태</th>
-                        <th style={{ textAlign: "center" }}>등록일</th>
-                        <th style={{ textAlign: "center" }}>관리</th>
+                        <th style={{ textAlign: "center", width: "70px", fontWeight: "400" }}>번호</th>
+                        <th style={{ textAlign: "center", width: "120px", fontWeight: "400" }}>여행일</th>
+                        <th style={{ textAlign: "center", fontWeight: "400" }}>상품명</th>
+                        <th style={{ textAlign: "center", width: "150px", fontWeight: "400" }}>옵션명</th>
+                        <th style={{ textAlign: "center", width: "150px", fontWeight: "400" }}>이름</th>
+                        <th style={{ textAlign: "center", width: "150px", fontWeight: "400" }}>연락처</th>
+                        <th style={{ textAlign: "center", width: "70px", fontWeight: "400" }}>총인원</th>
+                        <th style={{ textAlign: "center", width: "100px", fontWeight: "400" }}>결제금액</th>
+                        <th style={{ textAlign: "center", width: "100px", fontWeight: "400" }}>진행상태</th>
+                        <th style={{ textAlign: "center", width: "100px", fontWeight: "400" }}>등록일</th>
+                        <th style={{ textAlign: "center", width: "200px", fontWeight: "400" }}>관리</th>
                     </tr>
                 </thead>
                 <tbody>

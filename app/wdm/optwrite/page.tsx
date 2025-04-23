@@ -3,6 +3,7 @@
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import "@/styles/form.css"; // 스타일 파일 import
 
 interface ShopData {
@@ -71,10 +72,17 @@ export default function Optwrite() {
 
     return (
         <div>
-            <h1>옵션 등록</h1>
-            <form onSubmit={handleSubmit}>
+            <div className="w_con_navi_wrap">
+                <div className="w_con_title">여행옵션 등록</div>
+                <div style={{ textAlign: "right" }}>
+                    <button onClick={handleSubmit} className="btn btn-secondary">등록</button>&nbsp;
+                    <Link href="/wdm/optlist" className="btn btn-secondary">목록</Link>
+                </div>
+            </div>
+            
+            <form onSubmit={handleSubmit} className="w-full space-y-6 p-6 bg-white rounded-lg shadow">
                 <div>
-                    <label htmlFor="wr_shopcode">상품명:</label>
+                    <label htmlFor="wr_shopcode" className="block text-sm font-medium text-gray-700">상품명</label>
                     <select 
                         name="wr_shopcode" 
                         id="wr_shopcode" 
@@ -91,7 +99,7 @@ export default function Optwrite() {
                     </select>
                 </div>
                 <div>
-                    <label htmlFor="wr_optnm">옵션명: </label>
+                    <label htmlFor="wr_optnm" className="block text-sm font-medium text-gray-700">옵션명</label>
                     <input
                         type="text"
                         name="wr_optnm"
@@ -102,7 +110,7 @@ export default function Optwrite() {
                     />
                 </div>
                 <div>
-                    <label htmlFor="wr_inwon">인원:</label>
+                    <label htmlFor="wr_inwon" className="block text-sm font-medium text-gray-700">인원</label>
                     <input
                         type="number"
                         name="wr_inwon"
@@ -112,7 +120,15 @@ export default function Optwrite() {
                         value={formData.wr_inwon}
                     />
                 </div>
-                <button type="submit" className="w_btn_submit">전송</button>
+                
+                <div className="pt-4">
+                    <button
+                        type="submit"
+                        className="w-full inline-flex justify-center rounded-md bg-blue-600 px-4 py-2 text-white font-medium hover:bg-blue-700 transition"
+                    >
+                        전송
+                    </button>
+                </div>
                 {message && <p>{message}</p>}
             </form>
         </div>

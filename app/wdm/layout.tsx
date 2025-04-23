@@ -24,17 +24,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
+    <div className="w_adm_body_wrap">
       <div className="w_adm_navi_wrap">
-        <Link href="/wdm/slist" className="w_lk">상품목록</Link> | 
-        <Link href="/wdm/swrite" className="w_lk">상품등록</Link> | 
-        <Link href="/wdm/optlist" className="w_lk">옵션목록</Link> | 
-        <Link href="/wdm/optwrite" className="w_lk">옵션등록</Link> | 
-        <Link href="/wdm/rsvlist" className="w_lk">예약현황</Link> | 
-        <Link href="/" className="w_lk">사용자홈</Link> 
+        <Link href="/wdm/slist" className="btn btn-primary">여행상품 관리</Link>&nbsp; 
+        <Link href="/wdm/optlist" className="btn btn-primary">여행옵션션 관리</Link>&nbsp;
+        <Link href="/wdm/rsvlist" className="btn btn-primary">예약현황</Link>&nbsp;
+        <Link href="/" className="btn btn-primary">사용자홈</Link> 
       </div>
-
-      {children}
-    </>
+      
+      <div className="w_adm_lay_wrap">
+        <div className="w_adm_lay_sub_wrap">{children}</div>
+        
+      </div>
+      
+    </div>
   );
 }

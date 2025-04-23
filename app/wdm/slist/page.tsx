@@ -5,6 +5,8 @@ import axios from "axios";
 import Link from "next/link";
 import { REGDATE_STR } from "@/app/utils";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 
 interface FileData {
     file_seq: number;
@@ -69,18 +71,24 @@ export default function Slist() {
 
     return (
         <div>
-            <h1>상품 목록</h1>
+            <div className="w_con_navi_wrap">
+                <div className="w_con_title">여행상품 목록</div>
+                <div style={{ textAlign: "right" }}>
+                    <Link href="/wdm/swrite" className="btn btn-secondary">등록</Link>
+                </div>
+            </div>
+
+
             <table className="table">
                 {/* 헤더 */}
                 <thead className="table-secondary">
                     <tr>
-                        <th style={{ textAlign: "center" }}>번호</th>
-                        <th style={{ textAlign: "center" }}>이미지</th>
-                        <th style={{ textAlign: "center" }}>상품명</th>
-                        <th style={{ textAlign: "center" }}>간략소개</th>
-                        <th style={{ textAlign: "center" }}>금액</th>
-                        <th style={{ textAlign: "center" }}>등록일</th>
-                        <th style={{ textAlign: "center" }}>관리</th>
+                        <th style={{ textAlign: "center", width: "70px", fontWeight: "400" }}>번호</th>
+                        <th style={{ textAlign: "center", width: "100px", fontWeight: "400" }}>이미지</th>
+                        <th style={{ textAlign: "center", fontWeight: "400" }}>상품명</th>
+                        <th style={{ textAlign: "center", width: "150px", fontWeight: "400" }}>금액</th>
+                        <th style={{ textAlign: "center", width: "150px", fontWeight: "400" }}>등록일</th>
+                        <th style={{ textAlign: "center", width: "200px", fontWeight: "400" }}>관리</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -89,24 +97,27 @@ export default function Slist() {
                             <td style={{ textAlign: "center" }}>{item.wr_seq}</td>
                             <td style={{ textAlign: "center" }}>
                                 {item.files.length > 0 ? (
-                                    <img
-                                        src={`${process.env.NEXT_PUBLIC_API_URL}${item.files[0]?.file_path}`}
-                                        alt="상품 이미지"
-                                        style={{ width: "50px", height: "50px", objectFit: "cover" }}
-                                    />
+
+                                    (() => {
+                                        const imageUrl = encodeURIComponent(`${API_BASE_URL}${item.files[0].file_path}`);
+                                        return (
+                                            <img src={`/api/wdm/image-proxy?url=${imageUrl}`} alt="Gallery Image" style={{ width: "50px", height: "50px", display: "block", margin: "0 auto" }} />
+                                        );
+                                    })()
+
                                 ) : (
-                                    "이미지 없음"
+                                "이미지 없음"
                                 )}
+
                             </td>
                             <td style={{ textAlign: "left" }}>{item.wr_shopnm}</td>
-                            <td style={{ textAlign: "left" }}>{item.wr_intro}</td>
                             <td style={{ textAlign: "center" }}>{item.wr_price.toLocaleString()}원</td>
                             <td style={{ textAlign: "center" }}>{REGDATE_STR(item.wr_regdate)}</td>
                             <td style={{ textAlign: "center" }}>
                                 <Link href={`/wdm/supdate/${item.wr_shopcode}`} className="btn btn-sm btn-primary mx-2">
-                                    Edit
+                                    수정/상세
                                 </Link>
-                                <button onClick={() => handleDelete(item.wr_shopcode)} className="btn btn-sm btn-danger">Delete</button>
+                                <button onClick={() => handleDelete(item.wr_shopcode)} className="btn btn-sm btn-danger">삭제</button>
                             </td>
                         </tr>
                     ))}
