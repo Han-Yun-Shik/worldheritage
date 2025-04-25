@@ -87,43 +87,7 @@ export default function Uview() {
 
         viewData();
     }, [reservationData]);
-
-    // useEffect(() => {
-    //     async function fetchData() {
-    //         if (reservationData?.shopcode) {
-    //             try {
-    //                 const res = await axios.get(`/api/wdm/wrshopnm?id=${reservationData.shopcode}`);
-    //                 if (Array.isArray(res.data)) {
-    //                     setShopData(res.data);
-    //                 } else {
-    //                     console.error("wr_shopnm 데이터 형식이 올바르지 않습니다:", res.data);
-    //                 }
-    //             } catch (error) {
-    //                 console.error("wr_shopnm 불러오기 오류:", error);
-    //             }
-    //         }
-    //     }
-
-    //     async function optnmData() {
-    //         if (reservationData?.optcode) {
-    //             try {
-    //                 const res = await axios.get(`/api/wdm/wroptnm?id=${reservationData.optcode}`);
-    //                 if (res.data && res.data.length > 0) {
-    //                     setOptnm(res.data[0].wr_optnm); // wr_optnm 값만 저장
-    //                 } else {
-    //                     console.error("wr_optnm 없습니다:", res.data);
-    //                 }
-    //             } catch (error) {
-    //                 console.error("wr_optnm 불러오기 오류:", error);
-    //             }
-    //         }
-    //     }
-
-    //     fetchData();
-    //     optnmData();
-    // }, [reservationData]);
-
-    // `reservationData`와 `shopData`가 업데이트되면 `formData`도 업데이트
+    
     useEffect(() => {
         if (reservationData && shopData.length > 0) {
             setFormData({

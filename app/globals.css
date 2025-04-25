@@ -114,6 +114,7 @@ a {
 .w_con_title { font-size: 21px; font-weight: 700; }
 
 .w_adm_navi_wrap {
+  display: grid;grid-template-columns: 50% auto;
   padding: 5px 10px;
   background-color: #002e73;
 }
@@ -139,3 +140,4 @@ a {
 .w_rsvdate_font { font-size: 21px; font-weight: 500;margin-bottom: 20px; }
 .w_rsvdate_font2 { font-size: 17px; font-weight: 500;margin-bottom: 10px; }
 .w_rsvdate_font3 { font-size: 21px; font-weight: 500;margin-bottom: 10px; }
+.w_calendar_shopnm_wrap { font-size: 27px; font-weight: 700;margin-bottom: 10px; }

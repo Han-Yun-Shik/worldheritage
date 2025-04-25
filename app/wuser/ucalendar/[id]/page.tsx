@@ -6,6 +6,13 @@ import axios from "axios";
 import "@/styles/form.css";
 import Navi from "@/components/Navi";
 import { REGDATE_STR, REGDATE_YMD_STR } from "@/app/utils";
+import { AlertTriangle, Calendar, Clock, Users, X } from "lucide-react"
+
+interface ShopData {
+    wr_shopcode: string;
+    wr_shopnm: string;
+    wr_maxinwon: number;
+}
 
 interface OptData {
     wr_shopcode: string;
@@ -25,11 +32,28 @@ export default function Ucalendar() {
     const [dailyReservedTotal, setDailyReservedTotal] = useState<{ [key: string]: number }>({});
     const [selectedInwonMap, setSelectedInwonMap] = useState<{ [key: string]: number | null }>({}); // ✅ 선택한 인원을 저장하는 객체
     const [selectedOptionCode, setSelectedOptionCode] = useState<string | null>(null);
-
-
+    const [shopData, setShopData] = useState<ShopData[]>([]);
 
     const { id } = useParams();
     const router = useRouter();
+
+    // ashop 데이터 가져오기
+    const fetchShopData = async () => {
+        try {
+            const res = await axios.get("/api/wdm/getashop");
+            if (Array.isArray(res.data)) {
+                setShopData(res.data);
+            } else {
+                console.error("데이터 형식이 올바르지 않습니다:", res.data);
+            }
+        } catch (error) {
+            console.error("데이터 불러오기 오류:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchShopData();
+    }, []);
 
     useEffect(() => {
         if (optData.length > 0) {
@@ -229,6 +253,16 @@ export default function Ucalendar() {
             <div className="px-4 py-10">
                 <div className="max-w-[1400px] mx-auto w-full">
 
+                    <div className="w_calendar_shopnm_wrap">
+
+                        <h3 className="text-lg font-medium mb-4 flex items-center gap-2">
+                            <span className="bg-transparent text-black p-1.5 rounded-md">
+                                <i className="fas fa-calendar-alt h-5 w-5"></i>
+                            </span>
+                            {shopData[0]?.wr_shopnm ?? null}
+                        </h3>
+                    </div>
+
                     {/* 달력 카드형 컨테이너 */}
                     <div className="bg-white rounded-xl shadow-lg p-6 md:p-8 transition-all">
                         <div className="flex items-center justify-between mb-6">
@@ -307,69 +341,71 @@ export default function Ucalendar() {
 
                             {/* 옵션 선택 후 예약 영역 */}
                             {selectedOptionCode && (
-                            <div className="reservation-detail">
-                                <hr />
-                                {(() => {
-                                    const selectedOption = optData.find(opt => opt.wr_optcode === selectedOptionCode);
-                                    if (!selectedOption) return null;
+                                <div className="reservation-detail">
+                                    <hr />
+                                    {(() => {
+                                        const selectedOption = optData.find(opt => opt.wr_optcode === selectedOptionCode);
+                                        if (!selectedOption) return null;
 
-                                    const maxAvailable = selectedOption.wr_inwon - (selectedOption.reserved_inwon || 0);
+                                        const wr_maxinwon = shopData[0].wr_maxinwon;
+                                        const maxAvailable = selectedOption.wr_inwon - (selectedOption.reserved_inwon || 0);
+                                        const finalMax = Math.min(wr_maxinwon, maxAvailable); // 최종 선택 가능한 최대 인원
 
-                                    return (
-                                        <div>
-                                            <div className="w_rsvdate_font3">{selectedOption.wr_optnm} 예약</div>
-                                            <select
-                                                name="rsvinwon"
-                                                value={selectedInwonMap[selectedOption.wr_optcode] || ""}
-                                                onChange={(e) => handleSelectChange(selectedOption.wr_optcode, Number(e.target.value))}
-                                                disabled={maxAvailable <= 0}
-                                                className="w_form_input"
-                                            >
-                                                <option value="">가능 인원 선택</option>
-                                                {Array.from({ length: maxAvailable }, (_, i) => i + 1).map((num) => (
-                                                    <option key={num} value={num}>{num}명</option>
-                                                ))}
-                                            </select>
+                                        return (
+                                            <div>
+                                                <div className="w_rsvdate_font3">{selectedOption.wr_optnm} 예약</div>
+                                                <select
+                                                    name="rsvinwon"
+                                                    value={selectedInwonMap[selectedOption.wr_optcode] || ""}
+                                                    onChange={(e) => handleSelectChange(selectedOption.wr_optcode, Number(e.target.value))}
+                                                    disabled={finalMax <= 0}
+                                                    className="w_form_input"
+                                                >
+                                                    <option value="">가능 인원 선택</option>
+                                                    {Array.from({ length: finalMax }, (_, i) => i + 1).map((num) => (
+                                                        <option key={num} value={num}>{num}명</option>
+                                                    ))}
+                                                </select>
 
-                                            <button
-                                                onClick={async () => {
-                                                    if (selectedInwonMap[selectedOption.wr_optcode]) {
-                                                        try {
-                                                            const requestData = {
-                                                                rsvymd: selectedDate,
-                                                                shopcode: selectedOption.wr_shopcode,
-                                                                optcode: selectedOption.wr_optcode,
-                                                                rsvinwon: selectedInwonMap[selectedOption.wr_optcode],
-                                                            };
+                                                <button
+                                                    onClick={async () => {
+                                                        if (selectedInwonMap[selectedOption.wr_optcode]) {
+                                                            try {
+                                                                const requestData = {
+                                                                    rsvymd: selectedDate,
+                                                                    shopcode: selectedOption.wr_shopcode,
+                                                                    optcode: selectedOption.wr_optcode,
+                                                                    rsvinwon: selectedInwonMap[selectedOption.wr_optcode],
+                                                                };
 
-                                                            const rsvdata_rq = await fetch("/api/wdm/uview/", {
-                                                                method: "POST",
-                                                                headers: { "Content-Type": "application/json" },
-                                                                body: JSON.stringify(requestData),
-                                                            });
+                                                                const rsvdata_rq = await fetch("/api/wdm/uview/", {
+                                                                    method: "POST",
+                                                                    headers: { "Content-Type": "application/json" },
+                                                                    body: JSON.stringify(requestData),
+                                                                });
 
-                                                            if (rsvdata_rq.ok) {
-                                                                const result = await rsvdata_rq.json();
-                                                                localStorage.setItem("wuserData", JSON.stringify(result));
-                                                                router.push("/wuser/uview");
-                                                            } else {
-                                                                alert("Error submitting form");
+                                                                if (rsvdata_rq.ok) {
+                                                                    const result = await rsvdata_rq.json();
+                                                                    localStorage.setItem("wuserData", JSON.stringify(result));
+                                                                    router.push("/wuser/uview");
+                                                                } else {
+                                                                    alert("Error submitting form");
+                                                                }
+                                                            } catch (error) {
+                                                                console.error("예약 요청 실패:", error);
                                                             }
-                                                        } catch (error) {
-                                                            console.error("예약 요청 실패:", error);
                                                         }
-                                                    }
-                                                }}
-                                                disabled={maxAvailable <= 0 || !selectedInwonMap[selectedOption.wr_optcode]}
-                                                className="w_btn_submit"
-                                            >
-                                                예약하기
-                                            </button>
-                                        </div>
-                                    );
-                                })()}
-                            </div>
-                        )}
+                                                    }}
+                                                    disabled={maxAvailable <= 0 || !selectedInwonMap[selectedOption.wr_optcode]}
+                                                    className="w_btn_submit"
+                                                >
+                                                    예약하기
+                                                </button>
+                                            </div>
+                                        );
+                                    })()}
+                                </div>
+                            )}
                         </div>
                     )}
 

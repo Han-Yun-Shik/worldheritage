@@ -26,17 +26,23 @@ export default function RootLayout({
   return (
     <div className="w_adm_body_wrap">
       <div className="w_adm_navi_wrap">
-        <Link href="/wdm/slist" className="btn btn-primary">여행상품 관리</Link>&nbsp; 
-        <Link href="/wdm/optlist" className="btn btn-primary">여행옵션션 관리</Link>&nbsp;
-        <Link href="/wdm/rsvlist" className="btn btn-primary">예약현황</Link>&nbsp;
-        <Link href="/" className="btn btn-primary">사용자홈</Link> 
+        <div>
+          <Link href="/wdm/slist" className="btn btn-primary">여행상품 관리</Link>&nbsp;
+          <Link href="/wdm/optlist" className="btn btn-primary">여행옵션 관리</Link>&nbsp;
+          <Link href="/wdm/rsvlist" className="btn btn-primary">예약현황</Link>
+        </div>
+        <div style={{textAlign:"right"}}>
+          <Link href="/wdm/rsvlist" className="btn btn-success">관리자홈</Link>&nbsp;
+          <Link href="/" className="btn btn-success">사용자홈</Link>
+        </div>
+
       </div>
-      
+
       <div className="w_adm_lay_wrap">
         <div className="w_adm_lay_sub_wrap">{children}</div>
-        
+
       </div>
-      
+
     </div>
   );
 }

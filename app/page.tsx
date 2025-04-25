@@ -33,7 +33,7 @@ export default function Home() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await axios.get("/api/wdm/slist");
+        const res = await axios.get("/api/wdm/slistuser");
         if (Array.isArray(res.data)) {
           setData(res.data);
         } else {

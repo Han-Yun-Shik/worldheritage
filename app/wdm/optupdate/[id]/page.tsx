@@ -1,7 +1,7 @@
 "use client";
 
 import axios from "axios";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import "@/styles/form.css"; // 스타일 파일 import
@@ -29,6 +29,13 @@ export default function Optwrite() {
     });
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(true);
+
+    //--##### Search arg s #####--//
+    const searchParams = useSearchParams();
+    const shopcode = searchParams.get("shopcode") || "";
+    const currentPage = searchParams.get("currentPage") || "1";
+    const backToListUrl = `/wdm/optlist?shopcode=${shopcode}&currentPage=${currentPage}`;
+    //--##### Search arg e #####--//
 
     // ashop 데이터 가져오기
     const fetchShopData = async () => {
@@ -93,7 +100,8 @@ export default function Optwrite() {
                 },
             });
             setMessage(response.data.message);
-            router.push("/wdm/optlist");
+            // ✅ 저장 후 목록으로 리디렉션
+            router.push(backToListUrl);
         } catch (error) {
             console.error("데이터 전송 실패:", error);
             setMessage("데이터 전송 실패");
@@ -111,7 +119,9 @@ export default function Optwrite() {
                 <div className="w_con_title">여행상품 수정</div>
                 <div style={{ textAlign: "right" }}>
                     <button onClick={handleSubmit} className="btn btn-secondary">수정</button>&nbsp;
-                    <Link href="/wdm/slist" className="btn btn-secondary">목록</Link>
+                    <button type="button" onClick={() => router.push(backToListUrl)} className="btn btn-secondary">
+                        목록
+                    </button>
                 </div>
             </div>
 

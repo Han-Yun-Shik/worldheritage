@@ -52,10 +52,23 @@ export const FORMATCANCELDATE = (date: string, time: string): string => {
 
 export const WR_STATE_ARR: { [key: number]: string } = {
     1: "예약접수",
-    2: "예약완료",
-    3: "예약취소",
+    2: "결제완료",
+    3: "결제취소",
 };
 export const WR_GENDER_ARR: { [key: string]: string } = {
     "M": "남",
     "W": "여",
+};
+
+export const getStateButtonClass = (state: number) => {
+    switch (state) {
+        case 1:
+            return "bg-green-500 hover:bg-green-600 text-white";
+        case 2:
+            return "bg-blue-500 hover:bg-blue-600 text-white";
+        case 3:
+            return "bg-red-300 hover:bg-red-300 text-white";
+        default:
+            return "bg-gray-300 text-gray-700";
+    }
 };

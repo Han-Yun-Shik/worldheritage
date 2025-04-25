@@ -3,11 +3,19 @@ import axios from "axios";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const res = await axios.get(`${API_BASE_URL}/api/rsvlist`);
+    const url = new URL(request.url);
+    const query = url.search; // ?wr_shopnm=...&wr_name=...
+    const fullUrl = `${API_BASE_URL}/api/rsvlist${query}`;
+
+    console.log("[proxy] 요청 URL:", fullUrl);
+
+    const res = await axios.get(fullUrl);
     return NextResponse.json(res.data);
   } catch (error) {
+    console.error("API 프록시 오류:", error);
     return NextResponse.json({ error: "데이터 요청 실패" }, { status: 500 });
   }
 }
+

@@ -16,6 +16,7 @@ export default function Swrite() {
         wr_noinclude: "",
         wr_note: "",
         wr_price: "",
+        wr_maxinwon: "",
         addfile1: null,
     });
     const [message, setMessage] = useState("");
@@ -43,6 +44,7 @@ export default function Swrite() {
         data.append("wr_noinclude", formData.wr_noinclude);
         data.append("wr_note", formData.wr_note);
         data.append("wr_price", formData.wr_price);
+        data.append("wr_maxinwon", formData.wr_maxinwon);
         if (formData.addfile1) data.append("addfile1", formData.addfile1);
 
         try {
@@ -90,7 +92,7 @@ export default function Swrite() {
                     />
                 </div>
                 <div>
-                <label htmlFor="wr_content" className="block text-sm font-medium text-gray-700">상세소개</label>
+                <label htmlFor="wr_content" className="block text-sm font-medium text-gray-700">상세소개 <span className="text-red-500">(only html)</span></label>
                     <textarea
                         name="wr_content"
                         id="wr_content"
@@ -132,6 +134,16 @@ export default function Swrite() {
                         type="number"
                         name="wr_price"
                         id="wr_price"
+                        onChange={handleChange}
+                        className="w_form_input"
+                    />
+                </div>
+                <div>
+                <label htmlFor="wr_maxinwon" className="block text-sm font-medium text-gray-700">예약 가능 인원</label>
+                    <input
+                        type="number"
+                        name="wr_maxinwon"
+                        id="wr_maxinwon"
                         onChange={handleChange}
                         className="w_form_input"
                     />

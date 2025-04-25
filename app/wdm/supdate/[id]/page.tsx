@@ -1,7 +1,7 @@
 "use client";
 
 import axios from "axios";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import "@/styles/form.css"; // 스타일 파일 import
@@ -23,6 +23,7 @@ interface ShopData {
     wr_noinclude: string;
     wr_note: string;
     wr_price: number;
+    wr_maxinwon: number;
     files: FileData[];
 }
 
@@ -38,12 +39,20 @@ export default function Sedit() {
         wr_noinclude: "",
         wr_note: "",
         wr_price: 0,
+        wr_maxinwon: 0,
         files: [],
     });
 
     const [file, setFile] = useState<File | null>(null);
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(true);
+
+    //--##### Search arg s #####--//
+    const searchParams = useSearchParams();
+    const shopnm = searchParams.get("shopnm") || "";
+    const currentPage = searchParams.get("currentPage") || "1";
+    const backToListUrl = `/wdm/slist?shopnm=${shopnm}&currentPage=${currentPage}`;
+    //--##### Search arg e #####--//
 
     useEffect(() => {
         async function fetchData() {
@@ -90,13 +99,13 @@ export default function Sedit() {
         data.append("wr_noinclude", formData.wr_noinclude);
         data.append("wr_note", formData.wr_note);
         data.append("wr_price", formData.wr_price.toString());
+        data.append("wr_maxinwon", formData.wr_maxinwon.toString());
 
         if (file) {
             data.append("addfile1", file);
         }
 
         try {
-            // ✅ 경로 수정 (PUT 요청 시 `/api/sedit?id=${id}`가 아닌 `/api/wdm/sedit?id=${id}`)
             const response = await axios.put(`/api/wdm/sedit?id=${id}`, data, {
                 headers: {
                     "Content-Type": "multipart/form-data",
@@ -104,7 +113,8 @@ export default function Sedit() {
             });
 
             setMessage(response.data.message);
-            router.push("/wdm/slist");
+            // ✅ 저장 후 목록으로 리디렉션
+            router.push(backToListUrl);
         } catch (error) {
             console.error("데이터 전송 실패:", error);
             setMessage("데이터 전송 실패");
@@ -121,8 +131,12 @@ export default function Sedit() {
             <div className="w_con_navi_wrap">
                 <div className="w_con_title">여행상품 수정</div>
                 <div style={{ textAlign: "right" }}>
-                    <Link href="/wdm/swrite" className="btn btn-secondary">수정</Link>&nbsp;
-                    <Link href="/wdm/slist" className="btn btn-secondary">목록</Link>
+
+                    <button onClick={handleSubmit} className="btn btn-secondary">수정</button>&nbsp;
+                    <button type="button" onClick={() => router.push(backToListUrl)} className="btn btn-secondary">
+                        목록
+                    </button>
+
                 </div>
             </div>
 
@@ -201,6 +215,18 @@ export default function Sedit() {
                         name="wr_price"
                         id="wr_price"
                         value={formData.wr_price ?? 0}
+                        onChange={handleChange}
+                        className="w_form_input"
+                    />
+                </div>
+
+                <div>
+                    <label htmlFor="wr_maxinwon" className="block text-sm font-medium text-gray-700">예약 가능 인원</label>
+                    <input
+                        type="number"
+                        name="wr_maxinwon"
+                        id="wr_maxinwon"
+                        value={formData.wr_maxinwon ?? 0}
                         onChange={handleChange}
                         className="w_form_input"
                     />

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
 import axios from "axios";
 import Link from "next/link";
 import "@/styles/form.css"; // 스타일 파일 import
@@ -79,6 +79,16 @@ export default function Rsvedit() {
 
     // 참가자 정보를 배열로 관리
     const [participants, setParticipants] = useState<{ name: string; age: string; gender: string; address: string; email: string; tel: string }[]>([]);
+
+    //--##### Search arg s #####--//
+    const searchParams = useSearchParams();
+    const shopnm = searchParams.get("shopnm") || "";
+    const name = searchParams.get("name") || "";
+    const state = searchParams.get("state") || "";
+    const tourdate = searchParams.get("tourdate") || "";
+    const currentPage = searchParams.get("currentPage") || "1";
+    const backToListUrl = `/wdm/rsvlist?shopnm=${shopnm}&name=${name}&state=${state}&tourdate=${tourdate}&currentPage=${currentPage}`;
+    //--##### Search arg e #####--//
 
     // ✅ fetchData 함수 useCallback으로 추출
     const fetchData = useCallback(async () => {
@@ -274,8 +284,9 @@ export default function Rsvedit() {
             const res = await axios.put(`/api/wdm/rsvedit?id=${id}`, formData);
             if (res.status === 200) {
                 setMessage("수정이 완료되었습니다.");
-                //router.push("/wdm/rsvlist/");
-                fetchData();
+                //fetchData();
+                // ✅ 저장 후 목록으로 리디렉션
+                router.push(backToListUrl);
             }
         } catch (error) {
             console.error("수정 중 오류 발생:", error);
@@ -285,15 +296,19 @@ export default function Rsvedit() {
 
     return (
         <div>
-            <div className="w_con_navi_wrap">
-                <div className="w_con_title">예약 관리</div>
-                <div style={{ textAlign: "right" }}>
-                    <button onClick={handleSubmit} className="btn btn-secondary">수정</button>&nbsp;
-                    <Link href="/wdm/optlist" className="btn btn-secondary">목록</Link>
-                </div>
-            </div>
-
             <form onSubmit={handleSubmit}>
+                <div className="w_con_navi_wrap">
+                    <div className="w_con_title">예약 관리</div>
+                    <div style={{ textAlign: "right" }}>
+                        <button type="submit" className="btn btn-secondary">수정</button>&nbsp;
+                        <button type="button" onClick={() => router.push(backToListUrl)} className="btn btn-secondary">
+                            목록
+                        </button>
+
+                    </div>
+                </div>
+
+
                 <div className="w-full max-w-3xl mx-auto p-4" style={{ backgroundColor: "#ffffff", maxWidth: "1400px" }}>
                     <Card className="shadow-lg border-0">
                         <CardHeader className="bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 rounded-t-lg">
@@ -494,6 +509,8 @@ export default function Rsvedit() {
                                                 </span>
 
                                                 참가자 정보
+
+                                                <input type="hidden" name="wr_seq" value={participant.wr_seq} className="w_form_input" readOnly />
                                             </h5>
 
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -535,7 +552,7 @@ export default function Rsvedit() {
                             </div>
 
                             <div style={{ textAlign: "center" }}>
-                                <button type="submit" className="w_btn_submit">전송</button>
+                                <button type="submit" className="w_btn_submit">수정</button>
                             </div>
                         </CardContent>
 
