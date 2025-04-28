@@ -9,8 +9,6 @@ export async function GET(request: Request) {
     const query = url.search; // ?wr_shopcode=...
     const fullUrl = `${API_BASE_URL}/api/optlist${query}`;
 
-    console.log("[proxy] 요청 URL:", fullUrl);
-
     const res = await axios.get(fullUrl);
     return NextResponse.json(res.data);
   } catch (error) {
