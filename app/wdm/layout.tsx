@@ -27,11 +27,12 @@ export default function RootLayout({
     <div className="w_adm_body_wrap">
       <div className="w_adm_navi_wrap">
         <div>
+          <Link href="/wdm/memlist" className="btn btn-primary">회원관리</Link>&nbsp;
           <Link href="/wdm/slist" className="btn btn-primary">여행상품 관리</Link>&nbsp;
           <Link href="/wdm/optlist" className="btn btn-primary">여행옵션 관리</Link>&nbsp;
           <Link href="/wdm/rsvlist" className="btn btn-primary">예약현황</Link>
         </div>
-        <div style={{textAlign:"right"}}>
+        <div style={{ textAlign: "right" }}>
           <Link href="/wdm/rsvlist" className="btn btn-success">관리자홈</Link>&nbsp;
           <Link href="/" className="btn btn-success">사용자홈</Link>
         </div>
