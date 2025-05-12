@@ -217,7 +217,7 @@ export default function Ucalendar() {
                 >
                     <div className="font-semibold">{day}</div>
                     <div className="mt-1 text-xs text-gray-600 bg-gray-100 rounded p-1 leading-snug">
-                        최대 {total}명<br />
+                        {/* 최대 {total}명<br /> */}
                         예약됨 {reserved}명<br />
                         가능 {available}명
                     </div>
