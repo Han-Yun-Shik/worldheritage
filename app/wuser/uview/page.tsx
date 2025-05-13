@@ -56,6 +56,21 @@ export default function Uview() {
         wr_totprice: 0,
     });
 
+    const [sessionId, setSessionId] = useState("");
+    // sessionId 불러오기
+    useEffect(() => {
+        const fetchSessionId = async () => {
+            const res = await fetch("/api/session/init", {
+                method: "GET",
+                credentials: "include",
+            });
+            const data = await res.json();
+            setSessionId(data.session_id); // ✅ 설정
+        };
+
+        fetchSessionId();
+    }, []);
+
     useEffect(() => {
         const storedData = localStorage.getItem("wuserData");
         if (storedData) {
@@ -87,14 +102,14 @@ export default function Uview() {
 
         viewData();
     }, [reservationData]);
-    
+
     useEffect(() => {
-        if (reservationData && shopData.length > 0) {
+        if (reservationData && shopData.length > 0 && sessionId) {
             setFormData({
                 wr_shopcode: reservationData.shopcode || "",
                 wr_shopnm: shopData[0]?.wr_shopnm || "",
                 wr_optcode: reservationData.optcode || "",
-                wr_optnm: shopData[0]?.aopt[0].wr_optnm || "",
+                wr_optnm: shopData[0]?.aopt[0]?.wr_optnm || "",
                 wr_tourdate: reservationData.rsvymd || "",
                 wr_totinwon: reservationData.rsvinwon || 0,
                 wr_price: shopData[0]?.wr_price || 0,
@@ -102,8 +117,28 @@ export default function Uview() {
                     ? (shopData[0].wr_price * reservationData.rsvinwon)
                     : 0,
             });
+
+            const payload = {
+                sessionid: sessionId,
+                wr_shopcode: reservationData.shopcode || "",
+                wr_shopnm: shopData[0]?.wr_shopnm || "",
+                wr_optcode: reservationData.optcode || "",
+                wr_optnm: shopData[0]?.aopt[0]?.wr_optnm || "",
+                wr_tourdate: reservationData.rsvymd || "",
+                wr_totinwon: reservationData.rsvinwon || 0,
+            };
+
+            fetch("/api/wdm/rsvposttmp", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            })
+                .then((res) => res.json())
+                .then((data) => console.log("임시저장 결과:", data))
+                .catch((err) => console.error("임시저장 오류:", err));
         }
-    }, [reservationData, shopData]);
+    }, [reservationData, shopData, sessionId]);
+
 
     console.log("shopData: ", shopData)
     // console.log("optnm: ", optnm)
@@ -140,7 +175,7 @@ export default function Uview() {
     return (
         <div>
             <Navi />
-
+            {sessionId}
             <div className="container mx-auto py-6 px-4" style={{ backgroundColor: "#ffffff", maxWidth: "1400px" }}>
                 <Card className="w-full mx-auto">
                     <CardHeader>
@@ -261,7 +296,7 @@ export default function Uview() {
                                 프로그램 설명
                             </h3>
                             <div className="prose max-w-none">
-                                
+
                                 <div
                                     dangerouslySetInnerHTML={{
                                         __html: shopData[0]?.wr_content || "",
@@ -269,7 +304,7 @@ export default function Uview() {
                                 ></div>
 
                             </div>
-                            
+
                         </div>
 
                         {/* 포함 사항 */}

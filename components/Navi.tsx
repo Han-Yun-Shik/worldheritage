@@ -9,6 +9,7 @@ export default function Navi() {
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
+  const [sessionId, setSessionId] = useState("");
 
   useEffect(() => {
     async function checkSession() {
@@ -27,7 +28,17 @@ export default function Navi() {
       }
     }
 
+    const fetchSession = async () => {
+      const res = await fetch("/api/session/init", {
+        method: "GET",
+        credentials: "include", // ✅ 쿠키 포함 필수
+      });
+      const data = await res.json();
+      setSessionId(data.session_id);
+    };
+
     checkSession();
+    fetchSession();
   }, []);
 
   const logout = async () => {
@@ -52,6 +63,7 @@ export default function Navi() {
           <Link href="/wuser/alogin" className="w_t_btn">로그인</Link>
         </>
       )}
+      당신의 방문자 ID: {sessionId}
     </div>
   );
 }

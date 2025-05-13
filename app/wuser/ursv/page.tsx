@@ -39,6 +39,21 @@ export default function Ursv() {
     const [isSelfParticipant, setIsSelfParticipant] = useState(false);
     const [message, setMessage] = useState("");
 
+    const [sessionId, setSessionId] = useState("");
+    // sessionId 불러오기
+    useEffect(() => {
+        const fetchSessionId = async () => {
+            const res = await fetch("/api/session/init", {
+                method: "GET",
+                credentials: "include",
+            });
+            const data = await res.json();
+            setSessionId(data.session_id); // ✅ 설정
+        };
+
+        fetchSessionId();
+    }, []);
+
     // 참가자 정보를 배열로 관리
     const [participants, setParticipants] = useState<{ name: string; age: string; gender: string; address: string; email: string; tel: string }[]>([]);
 
@@ -129,9 +144,27 @@ export default function Ursv() {
         );
     };
 
+    const handletmpDelete = async (session_code?: string) => {
+        if (!session_code) {
+            console.warn("session_code 없음으로 삭제 생략");
+            return;
+        }
+
+        try {
+            const res = await axios.delete(`/api/wdm/rsvtmpdelete?id=${session_code}`);
+            if (res.status === 200) {
+                console.log("임시 데이터 삭제 성공:", res.data.message);
+            } else {
+                console.warn("임시 데이터 삭제 실패:", res.data);
+            }
+        } catch (error) {
+            console.error("임시 데이터 삭제 요청 실패:", error);
+        }
+    };
+
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("전송 데이터:", { ...formData, participants });
 
         try {
             // 1. 예약 데이터 서버에 전송
@@ -142,21 +175,25 @@ export default function Ursv() {
             });
             setMessage(response.data.message);
 
-            // 2. 인증 요청: 이메일 + 전화번호만 전달
+            // 1-2. 임시저장 데이터 삭제 (await 추가)
+            await handletmpDelete(sessionId);
+
+            // 2. 인증 요청
             const { wr_email, wr_tel } = formData;
             const loginResponse = await axios.post("/api/wdm/plogin", { wr_email, wr_tel });
 
-            // 3. localStorage에 인증 정보 저장
+            // 3. 인증 정보 저장
             localStorage.setItem("ploginData", JSON.stringify({ wr_email, wr_tel }));
 
-            // 4. 예약 목록 페이지로 이동
+            // 4. 이동
             router.push("/wuser/plist");
 
         } catch (error) {
-            console.error("데이터 전송 실패:", error);
+            console.error("제출 실패:", error);
             setMessage("데이터 전송 실패");
         }
     };
+
 
     // const nicepayrq = async (e: React.FormEvent) => {
     //     e.preventDefault();
@@ -196,7 +233,7 @@ export default function Ursv() {
     return (
         <div>
             <Navi />
-
+            {sessionId}
             {/* <button onClick={nicepayrq}>Nice Pay 결제</button> */}
             <form onSubmit={handleSubmit}>
 
