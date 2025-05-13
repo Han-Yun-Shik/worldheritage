@@ -40,7 +40,7 @@ export default function Ucalendar() {
     // ashop 데이터 가져오기
     const fetchShopData = async () => {
         try {
-            const res = await axios.get("/api/wdm/getashop");
+            const res = await axios.get(`/api/wdm/getashopone?id=${id}`);
             if (Array.isArray(res.data)) {
                 setShopData(res.data);
             } else {
@@ -141,6 +141,7 @@ export default function Ucalendar() {
         } catch (error) {
             console.error("예약 인원 월간 조회 오류:", error);
         }
+        console.log("reservedMap", reservedMap)
 
         // 날짜별 데이터 세팅
         for (let day = 1; day <= daysInMonth; day++) {

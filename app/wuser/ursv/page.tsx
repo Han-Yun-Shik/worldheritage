@@ -38,6 +38,7 @@ export default function Ursv() {
     const [agreed, setAgreed] = useState(false)
     const [isSelfParticipant, setIsSelfParticipant] = useState(false);
     const [message, setMessage] = useState("");
+    const [secondsLeft, setSecondsLeft] = useState(300); // 5분 = 300초
 
     const [sessionId, setSessionId] = useState("");
     // sessionId 불러오기
@@ -54,12 +55,38 @@ export default function Ursv() {
         fetchSessionId();
     }, []);
 
+    // 1. 카운트다운 로직은 그대로
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setSecondsLeft((prev) => {
+                return prev > 0 ? prev - 1 : 0;
+            });
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    // 2. 이동은 별도의 useEffect에서 처리
+    useEffect(() => {
+        if (secondsLeft === 0) {
+            handletmpDelete(sessionId);
+            router.push("/");
+        }
+    }, [secondsLeft, router]);
+
+    // setInterval
+    const formatTime = (sec: number) => {
+        const minutes = Math.floor(sec / 60);
+        const seconds = sec % 60;
+        return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+    };
+
     // 참가자 정보를 배열로 관리
     const [participants, setParticipants] = useState<{ name: string; age: string; gender: string; address: string; email: string; tel: string }[]>([]);
 
     useEffect(() => {
         const storedData = localStorage.getItem("wrsvData");
-        if (storedData) {
+        if (storedData && sessionId) {
             const parsedData = JSON.parse(storedData);
             setRsvData(parsedData);
             setFormData({
@@ -78,6 +105,27 @@ export default function Ursv() {
                 wr_email: "",
                 wr_tel: "",
             });
+
+            // 임시 데이터 저장
+            const payload = {
+                sessionid: sessionId,
+                wr_shopcode: parsedData.wr_shopcode || "",
+                wr_shopnm: parsedData.wr_shopnm || "",
+                wr_optcode: parsedData.wr_optcode || "",
+                wr_optnm: parsedData.wr_optnm || "",
+                wr_tourdate: parsedData.wr_tourdate || "",
+                wr_totinwon: parsedData.wr_totinwon || 0,
+            };
+
+            fetch("/api/wdm/rsvposttmp", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            })
+                .then((res) => res.json())
+                .then((data) => console.log("임시저장 결과:", data))
+                .catch((err) => console.error("임시저장 오류:", err));
+
             // 예약 인원만큼 참가자 배열 초기화 (map을 사용하여 개별 객체 생성)
             setParticipants(
                 Array.from({ length: parsedData.wr_totinwon }, () => ({
@@ -90,7 +138,9 @@ export default function Ursv() {
                 }))
             );
         }
-    }, [router]);
+    }, [router, sessionId]);
+
+
 
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -194,47 +244,19 @@ export default function Ursv() {
         }
     };
 
-
-    // const nicepayrq = async (e: React.FormEvent) => {
-    //     e.preventDefault();
-
-    //     try {
-    //         const res = await axios.get("/api/wdm/nicepayrq", {
-    //             responseType: 'text'
-    //         });
-
-    //         // 새 창 열기
-    //         const popup = window.open("", "_blank", "width=500,height=700");
-    //         if (popup) {
-    //             popup.document.open();
-    //             popup.document.write(res.data);
-    //             popup.document.close();
-    //         } else {
-    //             alert("팝업이 차단되었습니다. 팝업을 허용해주세요.");
-    //         }
-
-    //     } catch (error) {
-    //         console.error("데이터 불러오기 오류:", error);
-    //     }
-    // };
-
-    // useEffect(() => {
-    //     const handleMessage = (event: MessageEvent) => {
-    //         if (event.data?.status === "success") {
-    //             alert("결제가 완료되었습니다!");
-    //             // 페이지 이동 or 상태 업데이트 등
-    //         }
-    //     };
-
-    //     window.addEventListener("message", handleMessage);
-    //     return () => window.removeEventListener("message", handleMessage);
-    // }, []);
-
     return (
         <div>
             <Navi />
-            {sessionId}
-            {/* <button onClick={nicepayrq}>Nice Pay 결제</button> */}
+
+            <div className="flex flex-col items-center justify-center mt-10 space-y-2">
+                <p className="text-gray-600 text-sm">예약진행 남은 시간</p>
+
+                <div className="bg-red-100 text-red-700 font-mono text-3xl font-bold px-6 py-3 rounded-xl shadow-md animate-pulse">
+                    {formatTime(secondsLeft)}
+                </div>
+            </div>
+
+
             <form onSubmit={handleSubmit}>
 
                 <div className="w-full max-w-3xl mx-auto p-4" style={{ backgroundColor: "#ffffff", maxWidth: "1400px" }}>
@@ -420,7 +442,7 @@ export default function Ursv() {
                                                     성별
                                                 </Label>
                                                 <select
-                                                    name="wr_gender"
+                                                    name="gender"
                                                     value={participant.gender}
                                                     className="w_form_input"
                                                     onChange={(e) => handleParticipantChange(index, e)}

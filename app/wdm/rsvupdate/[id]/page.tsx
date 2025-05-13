@@ -338,6 +338,23 @@ export default function Rsvedit() {
                                 <Card className="p-6">
                                     <CardContent>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="예약상태">
+                                                <select
+                                                    name="wr_state"
+                                                    value={formData.wr_state}
+                                                    className="w_form_input"
+                                                    onChange={handleChange}
+                                                >
+                                                    <option value="">예약 상태 선택</option>
+                                                    {Object.entries(WR_STATE_ARR).map(([key, label]) => (
+                                                        <option key={key} value={key}>
+                                                            {label}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </InfoItem>
+
+
                                             <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="이름">
                                                 <input type="text" name="wr_name" id="wr_name" value={formData.wr_name} onChange={handleChange} className="w_form_input" />
                                             </InfoItem>
@@ -396,21 +413,7 @@ export default function Rsvedit() {
                                     <Card className="p-6">
                                         <CardContent>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="예약상태">
-                                                    <select
-                                                        name="wr_state"
-                                                        value={formData.wr_state}
-                                                        className="w_form_input"
-                                                        onChange={handleChange}
-                                                    >
-                                                        <option value="">예약 상태 선택</option>
-                                                        {Object.entries(WR_STATE_ARR).map(([key, label]) => (
-                                                            <option key={key} value={key}>
-                                                                {label}
-                                                            </option>
-                                                        ))}
-                                                    </select>
-                                                </InfoItem>
+
 
                                                 <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="결제금액">
                                                     {formData.payinfo[0].amt}

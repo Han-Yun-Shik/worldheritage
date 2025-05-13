@@ -104,7 +104,7 @@ export default function Uview() {
     }, [reservationData]);
 
     useEffect(() => {
-        if (reservationData && shopData.length > 0 && sessionId) {
+        if (reservationData && shopData.length > 0) {
             setFormData({
                 wr_shopcode: reservationData.shopcode || "",
                 wr_shopnm: shopData[0]?.wr_shopnm || "",
@@ -117,33 +117,32 @@ export default function Uview() {
                     ? (shopData[0].wr_price * reservationData.rsvinwon)
                     : 0,
             });
-
-            const payload = {
-                sessionid: sessionId,
-                wr_shopcode: reservationData.shopcode || "",
-                wr_shopnm: shopData[0]?.wr_shopnm || "",
-                wr_optcode: reservationData.optcode || "",
-                wr_optnm: shopData[0]?.aopt[0]?.wr_optnm || "",
-                wr_tourdate: reservationData.rsvymd || "",
-                wr_totinwon: reservationData.rsvinwon || 0,
-            };
-
-            fetch("/api/wdm/rsvposttmp", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload),
-            })
-                .then((res) => res.json())
-                .then((data) => console.log("임시저장 결과:", data))
-                .catch((err) => console.error("임시저장 오류:", err));
         }
-    }, [reservationData, shopData, sessionId]);
+    }, [reservationData, shopData]);
 
 
     console.log("shopData: ", shopData)
     // console.log("optnm: ", optnm)
     // console.log("reservationData: ", reservationData)
     // console.log("formData: ", formData)
+
+    const handletmpDelete = async (session_code?: string) => {
+        if (!session_code) {
+            console.warn("session_code 없음으로 삭제 생략");
+            return;
+        }
+
+        try {
+            const res = await axios.delete(`/api/wdm/rsvtmpdelete?id=${session_code}`);
+            if (res.status === 200) {
+                console.log("임시 데이터 삭제 성공:", res.data.message);
+            } else {
+                console.warn("임시 데이터 삭제 실패:", res.data);
+            }
+        } catch (error) {
+            console.error("임시 데이터 삭제 요청 실패:", error);
+        }
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -160,6 +159,9 @@ export default function Uview() {
             // localStorage에 데이터 저장
             localStorage.setItem("wrsvData", JSON.stringify(result));
 
+            // 임시 데이터 삭제 - 초기화
+            await handletmpDelete(sessionId);
+
             // 쿼리 파라미터 없이 페이지 이동
             router.push("/wuser/ursv");
         } else {
@@ -175,7 +177,7 @@ export default function Uview() {
     return (
         <div>
             <Navi />
-            {sessionId}
+
             <div className="container mx-auto py-6 px-4" style={{ backgroundColor: "#ffffff", maxWidth: "1400px" }}>
                 <Card className="w-full mx-auto">
                     <CardHeader>

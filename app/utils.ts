@@ -55,7 +55,7 @@ export const WR_STATE_ARR: { [key: number]: string } = {
     2: "결제완료",
     3: "결제취소",
     4: "예약취소",
-    5: "자동취소",
+    5: "시간만료",
 };
 export const WR_GENDER_ARR: { [key: string]: string } = {
     "M": "남",
