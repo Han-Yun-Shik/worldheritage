@@ -17,7 +17,7 @@ export default function Navi() {
 
   return (
     <div className="w_u_navi_wrap">
-      <Link href="/" className="w_t_btn">Home</Link>
+      <Link href="/" className="w_t_btn">홈</Link>
       <Link href="/wuser/plogin" className="w_t_btn">예약확인</Link>
       <Link href="/wdm/slist" className="w_t_btn">관리설정</Link>
       {isLoggedIn ? (
