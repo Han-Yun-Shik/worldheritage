@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Separator } from "@/components/ui/separator"
-import { User, Users, MapPin, Mail, Phone } from "lucide-react"
+import { User, Users, MapPin, Mail, Phone, Clock, CalendarDays, Wallet, Coins } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox";
 import { useLogin } from "@/context/LoginContext";
 
@@ -40,7 +40,7 @@ export default function Ursv() {
     const [agreed, setAgreed] = useState(false)
     const [isSelfParticipant, setIsSelfParticipant] = useState(false);
     const [message, setMessage] = useState("");
-    const [secondsLeft, setSecondsLeft] = useState(300); // 5분 = 300초
+    const [secondsLeft, setSecondsLeft] = useState(900); // 5분 = 300초
     const { isLoggedIn, userName, sessionId, logout } = useLogin();
 
     //--########## 카운트다운 s ##########--//
