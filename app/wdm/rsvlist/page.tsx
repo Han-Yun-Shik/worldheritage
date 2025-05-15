@@ -18,6 +18,7 @@ interface RsvData {
   wr_totprice: number;
   wr_state: number;
   wr_regdate: string;
+  wr_loginox: string;
 }
 
 export default function Rsvlist() {
@@ -30,7 +31,7 @@ export default function Rsvlist() {
 
   const [totalCount, setTotalCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(2);
+  const [itemsPerPage] = useState(20);
 
   const totalPages = Math.ceil(totalCount / itemsPerPage);
 
@@ -217,6 +218,7 @@ export default function Rsvlist() {
             <th style={{ textAlign: "center" }}>결제금액</th>
             <th style={{ textAlign: "center" }}>진행상태</th>
             <th style={{ textAlign: "center" }}>등록일</th>
+            <th style={{ textAlign: "center" }}>대리자</th>
             <th style={{ textAlign: "center" }}>관리</th>
           </tr>
         </thead>
@@ -237,6 +239,7 @@ export default function Rsvlist() {
                 </button>
               </td>
               <td style={{ textAlign: "center" }}>{REGDATE_STR(item.wr_regdate)}</td>
+              <td style={{ textAlign: "center" }}>{item.wr_loginox}</td>
               <td style={{ textAlign: "center" }}>
                 <Link
                   href={{

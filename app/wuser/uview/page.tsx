@@ -10,6 +10,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import Navi from "@/components/Navi";
 import { REGDATE_STR, REGDATE_YMD_STR } from "@/app/utils";
+import { useLogin } from "@/context/LoginContext";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -37,6 +38,7 @@ interface ShopData {
 
 export default function Uview() {
     const router = useRouter();
+    const { isLoggedIn, userName, sessionId, logout } = useLogin();
     const [reservationData, setReservationData] = useState<{
         rsvymd: string;
         shopcode: string;
@@ -55,21 +57,6 @@ export default function Uview() {
         wr_price: 0,
         wr_totprice: 0,
     });
-
-    const [sessionId, setSessionId] = useState("");
-    // sessionId 불러오기
-    useEffect(() => {
-        const fetchSessionId = async () => {
-            const res = await fetch("/api/session/init", {
-                method: "GET",
-                credentials: "include",
-            });
-            const data = await res.json();
-            setSessionId(data.session_id); // ✅ 설정
-        };
-
-        fetchSessionId();
-    }, []);
 
     useEffect(() => {
         const storedData = localStorage.getItem("wuserData");

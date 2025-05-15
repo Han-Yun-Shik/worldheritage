@@ -17,6 +17,7 @@ export default function Swrite() {
         wr_note: "",
         wr_price: "",
         wr_maxinwon: "",
+        wr_days: "",
         addfile1: null,
     });
     const [message, setMessage] = useState("");
@@ -45,6 +46,7 @@ export default function Swrite() {
         data.append("wr_note", formData.wr_note);
         data.append("wr_price", formData.wr_price);
         data.append("wr_maxinwon", formData.wr_maxinwon);
+        data.append("wr_days", formData.wr_days);
         if (formData.addfile1) data.append("addfile1", formData.addfile1);
 
         try {
@@ -89,6 +91,16 @@ export default function Swrite() {
                         id="wr_intro"
                         onChange={handleChange}
                         className="w_form_input"
+                    />
+                </div>
+                <div>
+                <label htmlFor="wr_content" className="block text-sm font-medium text-gray-700">가능 날짜 <span className="text-red-500">(형식: 2025-05-03,2025-05-25)</span></label>
+                    <textarea
+                        name="wr_days"
+                        id="wr_days"
+                        rows={10}
+                        onChange={handleChange}
+                        className="w_form_textarea"
                     />
                 </div>
                 <div>

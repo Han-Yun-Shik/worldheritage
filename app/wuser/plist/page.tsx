@@ -4,21 +4,9 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { REGDATE_STR, WR_STATE_ARR } from "@/app/utils";
+import { REGDATE_STR, WR_STATE_ARR, getStateButtonClass } from "@/app/utils";
 import Navi from "@/components/Navi";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { ChevronLeft, ChevronRight, MoreHorizontal, Search, Edit, Trash, Eye } from "lucide-react"
+
 
 interface Reservation {
     wr_seq: number;
@@ -84,85 +72,86 @@ export default function Plist() {
 
             <main className="container mx-auto py-8 px-4" style={{ backgroundColor: "#ffffff", maxWidth: "1400px" }}>
                 <div className="w-full">
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center justify-between mb-2">
                         <h2 className="text-xl font-bold">여행 예약 관리</h2>
-                        <div className="relative w-64">
-                            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                            <Input
-                                placeholder="이름, 상품명 검색..."
-                                className="pl-8"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
+                        <div className="flex items-start gap-2 p-3 border border-red-300 bg-red-50 text-red-700 rounded-md">
+                            <svg
+                                className="w-7 h-7 mt-1 flex-shrink-0 text-red-600"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                                aria-hidden="true"
+                            >
+                                <path
+                                    fillRule="evenodd"
+                                    d="M8.257 3.099c.763-1.36 2.683-1.36 3.446 0l6.518 11.63c.75 1.339-.213 3.02-1.723 3.02H3.462c-1.51 0-2.473-1.681-1.723-3.02L8.257 3.1zM9 7a1 1 0 012 0v4a1 1 0 11-2 0V7zm2 6a1 1 0 10-2 0 1 1 0 002 0z"
+                                    clipRule="evenodd"
+                                />
+                            </svg>
+                            <p className="leading-relaxed">
+                                <strong className="font-semibold">주의:</strong> 결제/보기 버튼을 클릭 후 결제를 해야 예약이 완료됩니다.
+                            </p>
                         </div>
+
                     </div>
 
                     <div className="rounded-xl border border-gray-300 shadow-sm overflow-x-auto">
-                        <Table className="min-w-[900px] text-sm text-gray-700">
-                            <TableHeader className="bg-gray-100 text-gray-800">
-                                <TableRow>
-                                    <TableHead className="w-[60px] text-center px-3 py-2">번호</TableHead>
-                                    <TableHead className="px-3 py-2">여행일</TableHead>
-                                    <TableHead className="min-w-[150px] px-3 py-2">상품명</TableHead>
-                                    <TableHead className="min-w-[120px] px-3 py-2">옵션명</TableHead>
-                                    <TableHead className="px-3 py-2">이름</TableHead>
-                                    <TableHead className="px-3 py-2">연락처</TableHead>
-                                    <TableHead className="text-center px-3 py-2">총인원</TableHead>
-                                    <TableHead className="text-right px-3 py-2">결제금액</TableHead>
-                                    <TableHead className="px-3 py-2">진행상태</TableHead>
-                                    <TableHead className="px-3 py-2">등록일</TableHead>
-                                    <TableHead className="text-center px-3 py-2">관리</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
+                        <table className="min-w-[900px] w-full text-sm text-gray-700 table-fixed border-collapse">
+                            <thead className="bg-gray-100 text-gray-800">
+                                <tr>
+                                    <th className="px-3 py-2 whitespace-nowrap text-center">여행일</th>
+                                    <th className="min-w-[150px] px-3 py-2 text-center">상품명</th>
+                                    <th className="min-w-[120px] px-3 py-2 text-center">옵션명</th>
+                                    <th className="px-3 py-2 text-center">이름</th>
+                                    <th className="px-3 py-2 text-center">연락처</th>
+                                    <th className="text-center px-3 py-2 text-center">총인원</th>
+                                    <th className="text-right px-3 py-2 text-center">결제금액</th>
+                                    <th className="px-3 py-2 text-center">진행상태</th>
+                                    <th className="px-3 py-2 text-center">등록일</th>
+                                    <th className="text-center px-3 py-2 text-center">관리</th>
+                                </tr>
+                            </thead>
+                            <tbody>
                                 {reservations.length > 0 ? (
                                     reservations.map((item, index) => (
-                                        <TableRow
+                                        <tr
                                             key={item.wr_seq}
                                             className={index % 2 === 0 ? "bg-white hover:bg-gray-50" : "bg-gray-50 hover:bg-gray-100"}
                                         >
-                                            <TableCell className="text-center font-medium px-3 py-2">{item.wr_seq}</TableCell>
-                                            <TableCell className="px-3 py-2">{item.wr_tourdate}</TableCell>
-                                            <TableCell className="px-3 py-2">{item.wr_shopnm}</TableCell>
-                                            <TableCell className="px-3 py-2">{item.wr_optnm}</TableCell>
-                                            <TableCell className="px-3 py-2">{item.wr_name}</TableCell>
-                                            <TableCell className="px-3 py-2">{item.wr_tel}</TableCell>
-                                            <TableCell className="text-center px-3 py-2">{item.wr_totinwon.toLocaleString()}명</TableCell>
-                                            <TableCell className="text-right px-3 py-2">{item.wr_totprice.toLocaleString()}</TableCell>
-                                            <TableCell className="px-3 py-2">{WR_STATE_ARR[item.wr_state]}</TableCell>
-                                            <TableCell className="px-3 py-2">{REGDATE_STR(item.wr_regdate)}</TableCell>
-                                            <TableCell className="text-center px-3 py-2">
-                                                <DropdownMenu>
-                                                    <DropdownMenuTrigger asChild>
-                                                        <Button variant="ghost" className="h-8 w-8 p-0">
-                                                            <span className="sr-only">메뉴 열기</span>
-                                                            <MoreHorizontal className="h-4 w-4" />
-                                                        </Button>
-                                                    </DropdownMenuTrigger>
-                                                    <DropdownMenuContent align="end" className="bg-white shadow-md rounded-md p-2">
-                                                        <DropdownMenuLabel>작업</DropdownMenuLabel>
-                                                        <DropdownMenuSeparator />
-                                                        <DropdownMenuItem className="flex items-center">
-                                                            <Eye className="mr-2 h-4 w-4" />
-                                                            <Link href={`/wuser/pview/${item.wr_code}`} className="text-blue-600 hover:underline">
-                                                                상세보기
-                                                            </Link>
-                                                        </DropdownMenuItem>
-                                                    </DropdownMenuContent>
-                                                </DropdownMenu>
-                                            </TableCell>
-                                        </TableRow>
+                                            <td className="px-3 py-2 whitespace-nowrap text-center">{item.wr_tourdate}</td>
+                                            <td className="px-3 py-2 text-center">{item.wr_shopnm}</td>
+                                            <td className="px-3 py-2 text-center">{item.wr_optnm}</td>
+                                            <td className="px-3 py-2 text-center">{item.wr_name}</td>
+                                            <td className="px-3 py-2 text-center">{item.wr_tel}</td>
+                                            <td className="text-center px-3 py-2">{item.wr_totinwon.toLocaleString()}명</td>
+                                            <td className="text-center px-3 py-2">{item.wr_totprice.toLocaleString()}</td>
+                                            <td className="px-3 py-2 text-center"><button className={`px-2 py-1 text-sm font-medium rounded ${getStateButtonClass(item.wr_state)}`}>
+                                                {WR_STATE_ARR[item.wr_state] || "알수없음"}
+                                            </button></td>
+                                            <td className="px-3 py-2 text-center">{REGDATE_STR(item.wr_regdate)}</td>
+                                            <td className="px-3 py-2 text-center">
+                                                {(item.wr_state === 1 || item.wr_state === 2) && (
+                                                    <Link
+                                                        href={`/wuser/pview/${item.wr_code}`}
+                                                        className="inline-block px-2 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition"
+                                                    >
+                                                        결제/보기
+                                                    </Link>
+                                                )}
+
+                                            </td>
+                                        </tr>
                                     ))
                                 ) : (
-                                    <TableRow>
-                                        <TableCell colSpan={11} className="h-24 text-center text-gray-500">
+                                    <tr>
+                                        <td colSpan={11} className="h-24 text-center text-gray-500">
                                             검색 결과가 없습니다.
-                                        </TableCell>
-                                    </TableRow>
+                                        </td>
+                                    </tr>
                                 )}
-                            </TableBody>
-                        </Table>
+                            </tbody>
+                        </table>
                     </div>
+
 
 
                     {/* 페이지네이션 */}

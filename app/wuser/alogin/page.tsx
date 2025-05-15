@@ -38,7 +38,7 @@ export default function Alogin() {
 
             if (res.data.success) {
                 setMessage("로그인 성공");
-                
+                window.location.href = "/"; // ✅ 페이지 강제 새로고침
             } else {
                 setMessage("아이디 또는 비밀번호가 틀렸습니다.");
             }
@@ -47,7 +47,7 @@ export default function Alogin() {
             setMessage("로그인 실패. 다시 시도해주세요.");
         }
     };
-
+    
     return (
         <div>
             <Navi />

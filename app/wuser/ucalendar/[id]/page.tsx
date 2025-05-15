@@ -7,11 +7,13 @@ import "@/styles/form.css";
 import Navi from "@/components/Navi";
 import { REGDATE_STR, REGDATE_YMD_STR } from "@/app/utils";
 import { AlertTriangle, Calendar, Clock, Users, X } from "lucide-react"
+import { useLogin } from "@/context/LoginContext";
 
 interface ShopData {
     wr_shopcode: string;
     wr_shopnm: string;
     wr_maxinwon: number;
+    wr_days: string;
 }
 
 interface OptData {
@@ -24,6 +26,7 @@ interface OptData {
 
 export default function Ucalendar() {
     const today = new Date();
+    const { isLoggedIn, userName, sessionId, logout } = useLogin();
     const [currentYear, setCurrentYear] = useState(today.getFullYear());
     const [currentMonth, setCurrentMonth] = useState(today.getMonth());
     const [selectedDate, setSelectedDate] = useState<string>("");
@@ -180,6 +183,10 @@ export default function Ucalendar() {
         fetchReservedInwon(dateStr);
     };
 
+    const wrdaysArray = (shopData[0]?.wr_days ?? "")
+        .split(",")
+        .map((d) => d.trim()); // ["2025-05-15", "2025-05-16", ...]
+
     const generateCalendar = () => {
         const firstDay = new Date(currentYear, currentMonth, 1).getDay();
         const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
@@ -200,29 +207,31 @@ export default function Ucalendar() {
             const reserved = dailyReservedTotal[dateStr] || 0;
             const available = total - reserved;
 
-            const dayOfWeek = (firstDay + day - 1) % 7;
-            const isSunday = dayOfWeek === 0;
-            const isSaturday = dayOfWeek === 6;
-
+            const isAllowed = wrdaysArray.includes(dateStr); // ✅ 예약 가능 날짜인지 확인
             const isSelected = selectedDate === dateStr;
 
             days.push(
                 <td
                     key={day}
-                    onClick={() => handleDateClick(day)}
+                    onClick={isAllowed ? () => handleDateClick(day) : undefined}
                     className={`
-                        h-[110px] border border-gray-300 align-top p-1 cursor-pointer transition
-                        ${isSelected ? "bg-orange-100 border-orange-400" : "bg-white hover:bg-gray-50"}
-                        ${isSunday ? "text-red-500" : isSaturday ? "text-blue-500" : "text-gray-800"}
-                    `}
+    h-[110px] border border-gray-300 align-top p-1 transition
+    ${isAllowed
+                            ? isSelected
+                                ? "bg-blue-500 text-white cursor-pointer" // ✅ 선택된 날짜: 파란 배경
+                                : "bg-green-500 text-white cursor-pointer hover:brightness-110"
+                            : "bg-white text-gray-400 cursor-not-allowed"}
+  `}
                 >
                     <div className="font-semibold">{day}</div>
-                    <div className="mt-1 text-xs text-gray-600 bg-gray-100 rounded p-1 leading-snug">
-                        {/* 최대 {total}명<br /> */}
-                        예약됨 {reserved}명<br />
-                        가능 {available}명
-                    </div>
+                    {isAllowed && (
+                        <div className={`mt-1 text-xs rounded p-2 leading-snug ${isSelected ? "bg-blue-700" : "bg-green-700"} text-white`}>
+                            예약됨 {reserved}명<br />
+                            가능 {available}명
+                        </div>
+                    )}
                 </td>
+
             );
 
             if ((firstDay + day) % 7 === 0 || day === daysInMonth) {
@@ -233,12 +242,8 @@ export default function Ucalendar() {
                 days = [];
             }
         }
-
         return weeks;
     };
-
-
-
 
     const handleSelectChange = (optcode: string, value: number) => {
         setSelectedInwonMap((prev) => ({
@@ -286,16 +291,16 @@ export default function Ucalendar() {
 
                         {/* 달력 테이블 */}
                         <div className="overflow-x-auto">
-                            <table className="w-full border-collapse text-center">
+                            <table className="w-full table-fixed border">
                                 <thead>
                                     <tr className="bg-gray-100 text-gray-700 text-sm">
-                                        <th className="py-2">일</th>
-                                        <th className="py-2">월</th>
-                                        <th className="py-2">화</th>
-                                        <th className="py-2">수</th>
-                                        <th className="py-2">목</th>
-                                        <th className="py-2">금</th>
-                                        <th className="py-2">토</th>
+                                        <th className="py-2 w-[14.2857%] text-center border border-gray-300">일</th>
+                                        <th className="py-2 w-[14.2857%] text-center border border-gray-300">월</th>
+                                        <th className="py-2 w-[14.2857%] text-center border border-gray-300">화</th>
+                                        <th className="py-2 w-[14.2857%] text-center border border-gray-300">수</th>
+                                        <th className="py-2 w-[14.2857%] text-center border border-gray-300">목</th>
+                                        <th className="py-2 w-[14.2857%] text-center border border-gray-300">금</th>
+                                        <th className="py-2 w-[14.2857%] text-center border border-gray-300">토</th>
                                     </tr>
                                 </thead>
                                 <tbody className="text-sm">
@@ -350,7 +355,9 @@ export default function Ucalendar() {
 
                                         const wr_maxinwon = shopData[0].wr_maxinwon;
                                         const maxAvailable = selectedOption.wr_inwon - (selectedOption.reserved_inwon || 0);
-                                        const finalMax = Math.min(wr_maxinwon, maxAvailable); // 최종 선택 가능한 최대 인원
+                                        //const finalMax = Math.min(wr_maxinwon, maxAvailable); // 최종 선택 가능한 최대 인원
+                                        // ✅ 로그인 여부에 따라 finalMax 계산 분기
+                                        const finalMax = isLoggedIn ? maxAvailable : Math.min(wr_maxinwon, maxAvailable);
 
                                         return (
                                             <div>

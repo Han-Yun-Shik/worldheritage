@@ -1,9 +1,9 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
 import "./globals.css";
-import Link from "next/link";
-
+import { LoginProvider } from "@/context/LoginContext"; // ✅ 로그인 Context 임포트
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,18 +26,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ko">
       <head>
-      <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-      />
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-
-        {children}
+        {/* ✅ LoginProvider로 children을 감싸기 */}
+        <LoginProvider>
+          {children}
+        </LoginProvider>
       </body>
     </html>
   );

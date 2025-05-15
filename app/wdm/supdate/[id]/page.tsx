@@ -24,6 +24,7 @@ interface ShopData {
     wr_note: string;
     wr_price: number;
     wr_maxinwon: number;
+    wr_days: string;
     files: FileData[];
 }
 
@@ -40,6 +41,7 @@ export default function Sedit() {
         wr_note: "",
         wr_price: 0,
         wr_maxinwon: 0,
+        wr_days: "",
         files: [],
     });
 
@@ -100,6 +102,7 @@ export default function Sedit() {
         data.append("wr_note", formData.wr_note);
         data.append("wr_price", formData.wr_price.toString());
         data.append("wr_maxinwon", formData.wr_maxinwon.toString());
+        data.append("wr_days", formData.wr_days);
 
         if (file) {
             data.append("addfile1", file);
@@ -166,7 +169,19 @@ export default function Sedit() {
                 </div>
 
                 <div>
-                    <label htmlFor="wr_content" className="block text-sm font-medium text-gray-700">상세소개</label>
+                <label htmlFor="wr_content" className="block text-sm font-medium text-gray-700">가능 날짜 <span className="text-red-500">(형식: 2025-05-03,2025-05-25)</span></label>
+                    <textarea
+                        name="wr_days"
+                        id="wr_days"
+                        rows={10}
+                        value={formData.wr_days || ""}
+                        onChange={handleChange}
+                        className="w_form_textarea"
+                    />
+                </div>
+                
+                <div>
+                    <label htmlFor="wr_content" className="block text-sm font-medium text-gray-700">상세소개 <span className="text-red-500">(only html)</span></label>
                     <textarea
                         name="wr_content"
                         id="wr_content"

@@ -1,7 +1,7 @@
 "use client";
 
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { REGDATE_STR, WR_STATE_ARR, WR_GENDER_ARR } from "@/app/utils";
 import "@/styles/form.css"; // 스타일 파일 import
@@ -15,6 +15,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Separator } from "@/components/ui/separator"
 import { User, Users, MapPin, Mail, Phone } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox";
+import { useLogin } from "@/context/LoginContext";
 
 export default function Ursv() {
     const router = useRouter();
@@ -34,27 +35,15 @@ export default function Ursv() {
         wr_address: "",
         wr_email: "",
         wr_tel: "",
+        wr_loginox: "",
     });
     const [agreed, setAgreed] = useState(false)
     const [isSelfParticipant, setIsSelfParticipant] = useState(false);
     const [message, setMessage] = useState("");
     const [secondsLeft, setSecondsLeft] = useState(300); // 5분 = 300초
+    const { isLoggedIn, userName, sessionId, logout } = useLogin();
 
-    const [sessionId, setSessionId] = useState("");
-    // sessionId 불러오기
-    useEffect(() => {
-        const fetchSessionId = async () => {
-            const res = await fetch("/api/session/init", {
-                method: "GET",
-                credentials: "include",
-            });
-            const data = await res.json();
-            setSessionId(data.session_id); // ✅ 설정
-        };
-
-        fetchSessionId();
-    }, []);
-
+    //--########## 카운트다운 s ##########--//
     // 1. 카운트다운 로직은 그대로
     useEffect(() => {
         const interval = setInterval(() => {
@@ -80,11 +69,16 @@ export default function Ursv() {
         const seconds = sec % 60;
         return `${minutes}:${seconds.toString().padStart(2, "0")}`;
     };
+    //--########## 카운트다운 e ##########--//
 
     // 참가자 정보를 배열로 관리
     const [participants, setParticipants] = useState<{ name: string; age: string; gender: string; address: string; email: string; tel: string }[]>([]);
 
+    const hasMounted = useRef(false);
     useEffect(() => {
+        if (hasMounted.current) return;
+        hasMounted.current = true;
+
         const storedData = localStorage.getItem("wrsvData");
         if (storedData && sessionId) {
             const parsedData = JSON.parse(storedData);
@@ -104,6 +98,7 @@ export default function Ursv() {
                 wr_address: "",
                 wr_email: "",
                 wr_tel: "",
+                wr_loginox: userName, //로그인정보
             });
 
             // 임시 데이터 저장
@@ -254,6 +249,8 @@ export default function Ursv() {
                 <div className="bg-red-100 text-red-700 font-mono text-3xl font-bold px-6 py-3 rounded-xl shadow-md animate-pulse">
                     {formatTime(secondsLeft)}
                 </div>
+
+                {sessionId}
             </div>
 
 
@@ -360,6 +357,7 @@ export default function Ursv() {
                             </div>
 
                             {/* 전송 정보 hidden */}
+                            <input type="hidden" name="wr_loginok" id="wr_loginok" className="w_form_input" value={userName} readOnly />{/* 로그인 유무 확인 */}
                             <input type="hidden" name="wr_tourdate" id="wr_tourdate" className="w_form_input" value={formData.wr_tourdate} readOnly />
                             <input type="hidden" name="wr_shopcode" id="wr_shopcode" className="w_form_input" value={formData.wr_shopcode} readOnly />
                             <input type="hidden" name="wr_shopnm" id="wr_shopnm" className="w_form_input" value={formData.wr_shopnm} readOnly />

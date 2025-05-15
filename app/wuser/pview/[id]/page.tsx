@@ -115,7 +115,7 @@ export default function Rsvedit() {
         return () => window.removeEventListener("message", handleMessage);
     }, [fetchData]);
     //--########## Nice Pay e ##########--//
-    
+
 
     if (loading) {
         return <p>로딩 중...</p>;
@@ -180,38 +180,14 @@ export default function Rsvedit() {
 
     // 승인일시 및 취소일시 여부에 따라 버튼을 렌더링합니다.
     const renderPaymentButtons = () => {
-        const pay = formData.payinfo?.[0];
+        if (formData.wr_state !== 1) return null; // ✅ 상태가 1이 아니면 아무 것도 렌더링하지 않음
 
-        // 결제정보가 아예 없을 경우 => 결제 버튼
-        if (!pay) {
-            return (
-                <button onClick={nicepayrq} className="btn btn-secondary">
-                    Nice Pay 결제
-                </button>
-            );
-        }
 
-        const hasAuthDate = !!pay.authdate;
-        const hasCancelDate = !!pay.canceldate;
-
-        if (!hasAuthDate) {
-            return (
-                <button onClick={nicepayrq} className="btn btn-secondary">
-                    Nice Pay 결제
-                </button>
-            );
-        }
-
-        if (hasAuthDate && !hasCancelDate) {
-            return (
-                <button onClick={nicerefund} className="btn btn-secondary">
-                    Nice Pay 취소
-                </button>
-            );
-        }
-
-        // 취소일시가 있으면 아무 버튼도 안 나옴
-        return null;
+        return (
+            <button onClick={nicepayrq} className="btn btn-secondary">
+                Nice Pay 결제
+            </button>
+        );
     };
 
 
@@ -236,7 +212,7 @@ export default function Rsvedit() {
                                     <Users className="mr-2 h-5 w-5 text-primary" />
                                     <h4 className="text-xl font-semibold">신청자 정보</h4>
                                 </div>
-                                <div className="flex items-center space-x-2" style={{color:"#ff0000"}}>
+                                <div className="flex items-center space-x-2" style={{ color: "#ff0000" }}>
                                     {/* <button onClick={nicepayrq} className="btn btn-secondary">Nice Pay 결제</button>&nbsp;
                                     <button onClick={nicerefund} className="btn btn-secondary">Nice Pay 취소</button> */}
                                     {message}

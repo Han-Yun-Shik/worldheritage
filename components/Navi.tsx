@@ -4,48 +4,15 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useLogin } from "@/context/LoginContext";
 
 export default function Navi() {
   const router = useRouter();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userName, setUserName] = useState("");
-  const [sessionId, setSessionId] = useState("");
+  const { isLoggedIn, userName, sessionId, logout } = useLogin();
 
-  useEffect(() => {
-    async function checkSession() {
-      try {
-        const res = await fetch("/api/wdm/session");
-        const data = await res.json();
-        if (data.isLoggedIn) {
-          setIsLoggedIn(true);
-          setUserName(data.user.wr_name);
-        } else {
-          setIsLoggedIn(false);
-          setUserName("");
-        }
-      } catch (err) {
-        console.error("세션 확인 실패:", err);
-      }
-    }
-
-    const fetchSession = async () => {
-      const res = await fetch("/api/session/init", {
-        method: "GET",
-        credentials: "include", // ✅ 쿠키 포함 필수
-      });
-      const data = await res.json();
-      setSessionId(data.session_id);
-    };
-
-    checkSession();
-    fetchSession();
-  }, []);
-
-  const logout = async () => {
-    await fetch("/api/wdm/logout", { method: "POST" });
-    setIsLoggedIn(false);
-    setUserName("");
-    router.push("/");
+  const handleLogout = async () => {
+    await logout(); // context에 정의된 logout 호출
+    router.push("/"); // ✅ 로그아웃 후 이동 (필요 시 /login 등으로 변경)
   };
 
   return (
@@ -56,7 +23,7 @@ export default function Navi() {
       {isLoggedIn ? (
         <>
           <span>{userName}님 환영합니다.</span>
-          <button type="button" onClick={logout} className="w_t_btn">로그아웃</button>
+          <button type="button" onClick={handleLogout} className="w_t_btn">로그아웃</button>
         </>
       ) : (
         <>
