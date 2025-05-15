@@ -5,7 +5,7 @@ import { useRouter, useParams, useSearchParams } from "next/navigation";
 import axios from "axios";
 import Link from "next/link";
 import "@/styles/form.css"; // 스타일 파일 import
-import { REGDATE_STR, WR_STATE_ARR, WR_GENDER_ARR, FORMATAUTHDATE, FORMATCANCELDATE } from "@/app/utils";
+import { REGDATE_STR, WR_STATE_ARR, WR_GENDER_ARR, FORMATAUTHDATE, FORMATCANCELDATE, REGDATE_YMDHIS_STR, REGDATE_YMDHIS_LIMIT_STR } from "@/app/utils";
 import Navi from "@/components/Navi";
 import { CardFooter } from "@/components/ui/card"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Separator } from "@/components/ui/separator"
-import { User, Users, MapPin, Mail, Phone } from "lucide-react"
+import { User, Users, MapPin, Mail, Phone, Clock, CalendarDays, Wallet, Coins } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox";
 import InfoItem from "@/components/InfoItem";
 
@@ -338,6 +338,14 @@ export default function Rsvedit() {
                                 <Card className="p-6">
                                     <CardContent>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <InfoItem icon={<Clock className="mr-2 h-4 w-4" />} label="등록일">
+                                                {REGDATE_YMDHIS_STR(formData.wr_regdate)}
+                                            </InfoItem>
+
+                                            <InfoItem icon={<Clock className="mr-2 h-4 w-4" />} label="유효시간">
+                                                <span className="text-red-500">{REGDATE_YMDHIS_LIMIT_STR(formData.wr_regdate)}</span>
+                                            </InfoItem>
+
                                             <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="예약상태">
                                                 <select
                                                     name="wr_state"
@@ -415,15 +423,15 @@ export default function Rsvedit() {
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
 
-                                                <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="결제금액">
+                                                <InfoItem icon={<Coins className="mr-2 h-4 w-4" />} label="결제금액">
                                                     {formData.payinfo[0].amt}
                                                 </InfoItem>
 
-                                                <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="승인일시">
+                                                <InfoItem icon={<Clock className="mr-2 h-4 w-4" />} label="승인일시">
                                                     {FORMATAUTHDATE(formData.payinfo[0].authdate)}
                                                 </InfoItem>
 
-                                                <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="취소일시">
+                                                <InfoItem icon={<Clock className="mr-2 h-4 w-4" />} label="취소일시">
                                                     {FORMATCANCELDATE(formData.payinfo[0].canceldate, formData.payinfo[0].canceltime)}
                                                 </InfoItem>
                                             </div>
@@ -452,7 +460,7 @@ export default function Rsvedit() {
                                 <Card className="p-6">
                                     <CardContent>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="여행일">
+                                            <InfoItem icon={<CalendarDays className="mr-2 h-4 w-4" />} label="여행일">
                                                 <input type="text" name="wr_tourdate" id="wr_tourdate" value={formData.wr_tourdate} onChange={handleChange} className="w_form_input" />
                                             </InfoItem>
 
@@ -468,16 +476,12 @@ export default function Rsvedit() {
                                                 <input type="text" name="wr_totinwon" id="wr_totinwon" value={formData.wr_totinwon} className="w_form_input" readOnly />
                                             </InfoItem>
 
-                                            <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="결제금액">
+                                            <InfoItem icon={<Coins className="mr-2 h-4 w-4" />} label="결제금액">
                                                 <input type="text" name="wr_totprice" id="wr_totprice" value={formData.wr_totprice} className="w_form_input" readOnly />
                                             </InfoItem>
 
-                                            <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="등록일">
-                                                {REGDATE_STR(formData.wr_regdate)}
-                                            </InfoItem>
-
-                                            <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="수정일">
-                                                {REGDATE_STR(formData.wr_update)}
+                                            <InfoItem icon={<Clock className="mr-2 h-4 w-4" />} label="수정일">
+                                                {REGDATE_YMDHIS_STR(formData.wr_update)}
                                             </InfoItem>
                                         </div>
                                     </CardContent>

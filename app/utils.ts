@@ -7,6 +7,41 @@ export const REGDATE_STR = (dateStr: string): string => {
 
     return `${year}-${month}-${day}`;
 };
+
+export const REGDATE_YMDHIS_STR = (dateStr: string): string => {
+  if (!dateStr || dateStr.length !== 14) return "";
+
+  const year = dateStr.substring(0, 4);
+  const month = dateStr.substring(4, 6);
+  const day = dateStr.substring(6, 8);
+  const hour = dateStr.substring(8, 10);
+  const minute = dateStr.substring(10, 12);
+  const second = dateStr.substring(12, 14);
+
+  return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
+};
+
+export const REGDATE_YMDHIS_LIMIT_STR = (dateStr: string): string => {
+  if (!dateStr || dateStr.length !== 14) return "";
+
+  const year = parseInt(dateStr.substring(0, 4), 10);
+  const month = parseInt(dateStr.substring(4, 6), 10) - 1; // JavaScript는 0-based month
+  const day = parseInt(dateStr.substring(6, 8), 10);
+  const hour = parseInt(dateStr.substring(8, 10), 10);
+  const minute = parseInt(dateStr.substring(10, 12), 10);
+  const second = parseInt(dateStr.substring(12, 14), 10);
+
+  const date = new Date(year, month, day, hour, minute, second);
+
+  // 15분 추가
+  date.setMinutes(date.getMinutes() + 15);
+
+  // 날짜 포맷팅 (예: 2025-05-14 15:28:02)
+  const pad = (n: number) => n.toString().padStart(2, "0");
+
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+};
+
 export const REGDATE_YMD_STR = (dateStr: string): string => {
     if (!dateStr) return "";
 

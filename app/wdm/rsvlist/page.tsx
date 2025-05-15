@@ -3,7 +3,7 @@
 import { useEffect, useState, Suspense } from "react";
 import axios from "axios";
 import Link from "next/link";
-import { REGDATE_STR, WR_STATE_ARR, getStateButtonClass } from "@/app/utils";
+import { REGDATE_STR, WR_STATE_ARR, getStateButtonClass, REGDATE_YMDHIS_STR, REGDATE_YMDHIS_LIMIT_STR } from "@/app/utils";
 import { useSearchParams, useRouter } from "next/navigation";
 
 interface RsvData {
@@ -218,6 +218,7 @@ export default function Rsvlist() {
             <th style={{ textAlign: "center" }}>결제금액</th>
             <th style={{ textAlign: "center" }}>진행상태</th>
             <th style={{ textAlign: "center" }}>등록일</th>
+            <th style={{ textAlign: "center" }}>유효시간</th>
             <th style={{ textAlign: "center" }}>대리자</th>
             <th style={{ textAlign: "center" }}>관리</th>
           </tr>
@@ -238,7 +239,8 @@ export default function Rsvlist() {
                   {WR_STATE_ARR[item.wr_state] || "알수없음"}
                 </button>
               </td>
-              <td style={{ textAlign: "center" }}>{REGDATE_STR(item.wr_regdate)}</td>
+              <td style={{ textAlign: "center" }}>{REGDATE_YMDHIS_STR(item.wr_regdate)}</td>
+              <td style={{ textAlign: "center" }}>{REGDATE_YMDHIS_LIMIT_STR(item.wr_regdate)}</td>
               <td style={{ textAlign: "center" }}>{item.wr_loginox}</td>
               <td style={{ textAlign: "center" }}>
                 <Link

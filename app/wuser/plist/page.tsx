@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { REGDATE_STR, WR_STATE_ARR, getStateButtonClass } from "@/app/utils";
+import { REGDATE_STR, WR_STATE_ARR, getStateButtonClass, REGDATE_YMDHIS_STR, REGDATE_YMDHIS_LIMIT_STR } from "@/app/utils";
 import Navi from "@/components/Navi";
 
 
@@ -88,7 +88,7 @@ export default function Plist() {
                                 />
                             </svg>
                             <p className="leading-relaxed">
-                                <strong className="font-semibold">주의:</strong> 결제/보기 버튼을 클릭 후 결제를 해야 예약이 완료됩니다.
+                                <strong className="font-semibold">주의:</strong> 결제/보기 버튼을 클릭 후 유효시간(15분) 내에 결제를 해야 예약이 완료됩니다.
                             </p>
                         </div>
 
@@ -107,6 +107,7 @@ export default function Plist() {
                                     <th className="text-right px-3 py-2 text-center">결제금액</th>
                                     <th className="px-3 py-2 text-center">진행상태</th>
                                     <th className="px-3 py-2 text-center">등록일</th>
+                                    <th className="px-3 py-2 text-center">유효시간</th>
                                     <th className="text-center px-3 py-2 text-center">관리</th>
                                 </tr>
                             </thead>
@@ -127,7 +128,8 @@ export default function Plist() {
                                             <td className="px-3 py-2 text-center"><button className={`px-2 py-1 text-sm font-medium rounded ${getStateButtonClass(item.wr_state)}`}>
                                                 {WR_STATE_ARR[item.wr_state] || "알수없음"}
                                             </button></td>
-                                            <td className="px-3 py-2 text-center">{REGDATE_STR(item.wr_regdate)}</td>
+                                            <td className="px-3 py-2 text-center">{REGDATE_YMDHIS_STR(item.wr_regdate)}</td>
+                                            <td className="px-3 py-2 text-center">{REGDATE_YMDHIS_LIMIT_STR(item.wr_regdate)}</td>
                                             <td className="px-3 py-2 text-center">
                                                 {(item.wr_state === 1 || item.wr_state === 2) && (
                                                     <Link
