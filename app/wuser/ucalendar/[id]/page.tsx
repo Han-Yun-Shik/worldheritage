@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
 import "@/styles/form.css";
@@ -39,6 +39,9 @@ export default function Ucalendar() {
 
     const { id } = useParams();
     const router = useRouter();
+
+    const optionRef = useRef<HTMLDivElement>(null); // 옵션 영역을 위한 ref
+    const reservationRef = useRef<HTMLDivElement>(null); // 예약 영역 참조
 
     // ashop 데이터 가져오기
     const fetchShopData = async () => {
@@ -181,6 +184,11 @@ export default function Ucalendar() {
 
         setSelectedDate(dateStr);
         fetchReservedInwon(dateStr);
+
+        // 날짜가 선택되면 해당 옵션 영역으로 스크롤 이동
+        setTimeout(() => {
+            optionRef.current?.scrollIntoView({ behavior: "smooth" });
+        }, 100); // React 렌더링 이후 이동하도록 약간의 지연
     };
 
     const wrdaysArray = (shopData[0]?.wr_days ?? "")
@@ -252,6 +260,17 @@ export default function Ucalendar() {
         }));
     };
 
+    const handleOptionClick = (optCode: string, maxAvailable: number) => {
+        if (maxAvailable <= 0) return;
+
+        setSelectedOptionCode(optCode);
+
+        // 선택 후 아래로 스크롤
+        setTimeout(() => {
+            reservationRef.current?.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+    };
+
     return (
         <div>
             <Navi />
@@ -312,7 +331,7 @@ export default function Ucalendar() {
 
                     {/* 선택된 날짜 관련 옵션 표시 영역 */}
                     {selectedDate && (
-                        <div className="bg-white rounded-xl shadow-lg p-6 mt-8">
+                        <div ref={optionRef} className="bg-white rounded-xl shadow-lg p-6 mt-8">
                             <h3 className="text-lg font-semibold text-gray-800 mb-2">{REGDATE_YMD_STR(selectedDate)} 예약 가능 옵션</h3>
                             <p className="text-sm text-gray-500 mb-4">시간별 가능 인원</p>
 
@@ -330,7 +349,8 @@ export default function Ucalendar() {
                                                 key={option.wr_optcode}
                                                 className={`rounded-md p-4 text-sm ${btnStyle} cursor-pointer`}
                                                 onClick={() => {
-                                                    if (maxAvailable > 0) setSelectedOptionCode(option.wr_optcode);
+                                                    //if (maxAvailable > 0) setSelectedOptionCode(option.wr_optcode);
+                                                    handleOptionClick(option.wr_optcode, maxAvailable)
                                                 }}
                                             >
                                                 <strong className="block mb-1">{option.wr_optnm}</strong>
@@ -347,7 +367,7 @@ export default function Ucalendar() {
 
                             {/* 옵션 선택 후 예약 영역 */}
                             {selectedOptionCode && (
-                                <div className="reservation-detail">
+                                <div ref={reservationRef} className="reservation-detail">
                                     <hr />
                                     {(() => {
                                         const selectedOption = optData.find(opt => opt.wr_optcode === selectedOptionCode);
