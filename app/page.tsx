@@ -72,7 +72,7 @@ export default function Home() {
       Number(item.wr_es)
     );
 
-    const now = new Date(); // 한국 브라우저 환경 기준
+    const now = new Date(); //// 한국 브라우저 환경 기준
     return now > deadline;
   };
 
