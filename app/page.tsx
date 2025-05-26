@@ -98,24 +98,13 @@ export default function Home() {
                     router.push(`/wuser/ucalendar/${item.wr_shopcode}`);
                   }
                 }}
-                className="relative cursor-pointer border rounded-2xl overflow-hidden shadow hover:shadow-lg transition-shadow bg-white flex flex-col"
+                className="cursor-pointer border rounded-2xl overflow-hidden shadow hover:shadow-lg transition-shadow bg-white flex flex-col"
               >
-                {/* 이미지 */}
-                <div className="relative">
-                  <img
-                    src={`/api/wdm/image-proxy?url=${imageUrl}`}
-                    alt={item.wr_shopnm}
-                    className="w-full h-56 object-cover"
-                  />
-                  {/* 마감 표시 */}
-                  {expired && (
-                    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10">
-                      <span className="text-white text-2xl font-bold">마감</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* 본문 */}
+                <img
+                  src={`/api/wdm/image-proxy?url=${imageUrl}`}
+                  alt={item.wr_shopnm}
+                  className="w-full h-56 object-cover"
+                />
                 <div className="p-5 flex flex-col flex-1 justify-between">
                   <h2 className="text-lg font-bold text-gray-800 truncate mb-2">{item.wr_shopnm}</h2>
 
@@ -137,8 +126,8 @@ export default function Home() {
                       </svg>
                       <span>{item.aoptinwon.toLocaleString()}명</span>
                     </div>
-                    <div className={isFull || expired ? "text-red-500 font-semibold" : "text-emerald-600 font-semibold"}>
-                      {isFull || expired ? "마감" : `잔여 ${remaining}명`}
+                    <div className={isFull ? "text-red-500 font-semibold" : "text-emerald-600 font-semibold"}>
+                      {isFull ? "마감" : `잔여 ${remaining}명`}
                     </div>
                   </div>
 
