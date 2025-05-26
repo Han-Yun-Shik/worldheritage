@@ -234,7 +234,7 @@ export default function Ucalendar() {
                     <div className="font-semibold">{day}</div>
                     {isAllowed && (
                         <div className={`mt-1 text-xs rounded p-2 leading-snug ${isSelected ? "bg-blue-700" : "bg-green-700"} text-white`}>
-                            예약됨 {reserved}명<br />
+                            {/* 예약됨 {reserved}명<br /> */}
                             가능 {available}명
                         </div>
                     )}
