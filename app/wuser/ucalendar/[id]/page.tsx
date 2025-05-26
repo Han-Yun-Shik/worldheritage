@@ -28,7 +28,8 @@ export default function Ucalendar() {
     const today = new Date();
     const { isLoggedIn, userName, sessionId, logout } = useLogin();
     const [currentYear, setCurrentYear] = useState(today.getFullYear());
-    const [currentMonth, setCurrentMonth] = useState(today.getMonth());
+    // const [currentMonth, setCurrentMonth] = useState(today.getMonth());
+    const [currentMonth, setCurrentMonth] = useState(6); // 7월 부터 시작
     const [selectedDate, setSelectedDate] = useState<string>("");
     const [optData, setOptData] = useState<OptData[]>([]);
     const [dailyTotalInwon, setDailyTotalInwon] = useState<{ [key: string]: number }>({});

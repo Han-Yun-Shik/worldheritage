@@ -244,13 +244,15 @@ export default function Ursv() {
             <Navi />
 
             <div className="flex flex-col items-center justify-center mt-10 space-y-2">
-                <p className="text-gray-600 text-sm">예약진행 남은 시간</p>
+                <p className="text-gray-600 text-sm text-center">
+                    화면을 벗어나거나 제한시간 15분이 지나면 예약 자리가 취소됩니다.<br />시간 만료전에 신청서를 작성 후 제출해주세요 
+                </p>
 
                 <div className="bg-red-100 text-red-700 font-mono text-3xl font-bold px-6 py-3 rounded-xl shadow-md animate-pulse">
                     {formatTime(secondsLeft)}
                 </div>
 
-                {sessionId}
+                {/* {sessionId} */}
             </div>
 
 
@@ -333,7 +335,7 @@ export default function Ursv() {
                                     <div className="space-y-2">
                                         <Label htmlFor="wr_address" className="flex items-center">
                                             <MapPin className="mr-1 h-4 w-4" />
-                                            주소
+                                            주소(<span className="text-red-500">동까지만 작성해주세요</span>)
                                         </Label>
                                         <input type="text" name="wr_address" id="wr_address" onChange={handleChange} className="w_form_input" required />
                                     </div>
@@ -341,7 +343,7 @@ export default function Ursv() {
                                     <div className="space-y-2">
                                         <Label htmlFor="wr_email" className="flex items-center">
                                             <Mail className="mr-1 h-4 w-4" />
-                                            이메일
+                                            이메일(<span className="text-red-500">예약확인에 필요하니 정확히 작성해주세요</span>)
                                         </Label>
                                         <input type="text" name="wr_email" id="wr_email" onChange={handleChange} className="w_form_input" required />
                                     </div>
@@ -349,7 +351,7 @@ export default function Ursv() {
                                     <div className="space-y-2">
                                         <Label htmlFor="wr_tel" className="flex items-center">
                                             <Phone className="mr-1 h-4 w-4" />
-                                            전화번호
+                                            전화번호(<span className="text-red-500">예약확인에 필요하니 정확히 작성해 주세요</span>)
                                         </Label>
                                         <input type="text" name="wr_tel" id="wr_tel" value={formData.wr_tel} onChange={handleChange} className="w_form_input" maxLength={11} placeholder="'-'생략 숫자만 입력" required />
                                     </div>
