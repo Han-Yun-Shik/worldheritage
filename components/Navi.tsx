@@ -30,7 +30,7 @@ export default function Navi() {
           <Link href="/wuser/alogin" className="w_t_btn">로그인</Link>
         </>
       )}
-      당신의 방문자 ID: {sessionId}
+      {/* 당신의 방문자 ID: {sessionId} */}
     </div>
   );
 }
