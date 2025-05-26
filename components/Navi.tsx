@@ -19,7 +19,7 @@ export default function Navi() {
     <div className="w_u_navi_wrap">
       <Link href="/" className="w_t_btn">홈</Link>
       <Link href="/wuser/plogin" className="w_t_btn">예약확인</Link>
-      <Link href="/wdm/slist" className="w_t_btn">관리설정</Link>
+      <Link href="/wdm/rsvlist" className="w_t_btn">관리설정</Link>
       {isLoggedIn ? (
         <>
           <span>{userName}님 환영합니다.</span>
