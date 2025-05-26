@@ -26,10 +26,10 @@ interface ShopData {
     wr_maxinwon: number;
     wr_days: string;
     wr_ey: string;
-        wr_em: string;
-        wr_ed: string;
-        wr_eh: string;
-        wr_ei: string;
+    wr_em: string;
+    wr_ed: string;
+    wr_eh: string;
+    wr_ei: string;
     files: FileData[];
 }
 
@@ -217,7 +217,7 @@ export default function Sedit() {
                 </div>
 
                 <div>
-                <label htmlFor="wr_content" className="block text-sm font-medium text-gray-700">가능 날짜 <span className="text-red-500">(형식: 2025-05-03,2025-05-25)</span></label>
+                    <label htmlFor="wr_content" className="block text-sm font-medium text-gray-700">가능 날짜 <span className="text-red-500">(형식: 2025-05-03,2025-05-25)</span></label>
                     <textarea
                         name="wr_days"
                         id="wr_days"
@@ -286,7 +286,7 @@ export default function Sedit() {
                         ))}
                     </select>
                 </div>
-                
+
                 <div>
                     <label htmlFor="wr_content" className="block text-sm font-medium text-gray-700">상세소개 <span className="text-red-500">(only html)</span></label>
                     <textarea
