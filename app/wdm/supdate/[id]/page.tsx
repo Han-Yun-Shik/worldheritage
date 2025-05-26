@@ -25,6 +25,11 @@ interface ShopData {
     wr_price: number;
     wr_maxinwon: number;
     wr_days: string;
+    wr_ey: string;
+        wr_em: string;
+        wr_ed: string;
+        wr_eh: string;
+        wr_ei: string;
     files: FileData[];
 }
 
@@ -42,12 +47,50 @@ export default function Sedit() {
         wr_price: 0,
         wr_maxinwon: 0,
         wr_days: "",
+        wr_ey: "",
+        wr_em: "",
+        wr_ed: "",
+        wr_eh: "",
+        wr_ei: "",
         files: [],
     });
 
     const [file, setFile] = useState<File | null>(null);
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(true);
+    //--# 마감일 s #--//
+    const [years, setYears] = useState<string[]>([]);
+    const [months, setMonths] = useState<string[]>([]);
+    const [days, setDays] = useState<string[]>([]);
+    const [sigans, setSigans] = useState<string[]>([]);
+    const [buns, setBuns] = useState<string[]>([]);
+
+    useEffect(() => {
+        const currentYear = new Date().getFullYear();
+        const yearOptions = Array.from({ length: 2 }, (_, i) => String(currentYear + i));
+        setYears(yearOptions);
+
+        const monthOptions = Array.from({ length: 12 }, (_, i) =>
+            String(i + 1).padStart(2, '0')
+        );
+        setMonths(monthOptions);
+
+        const dayOptions = Array.from({ length: 31 }, (_, i) =>
+            String(i + 1).padStart(2, '0')
+        );
+        setDays(dayOptions);
+
+        const siganOptions = Array.from({ length: 24 }, (_, i) =>
+            String(i + 0).padStart(2, '0')
+        );
+        setSigans(siganOptions);
+
+        const bunOptions = Array.from({ length: 60 }, (_, i) =>
+            String(i + 0).padStart(2, '0')
+        );
+        setBuns(bunOptions);
+    }, []);
+    //--# 마감일 e #--//
 
     //--##### Search arg s #####--//
     const searchParams = useSearchParams();
@@ -77,7 +120,7 @@ export default function Sedit() {
         }
     }, [id]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value, files } = e.target as HTMLInputElement;
 
         if (files && files.length > 0) {
@@ -103,6 +146,11 @@ export default function Sedit() {
         data.append("wr_price", formData.wr_price.toString());
         data.append("wr_maxinwon", formData.wr_maxinwon.toString());
         data.append("wr_days", formData.wr_days);
+        data.append("wr_ey", formData.wr_ey);
+        data.append("wr_em", formData.wr_em);
+        data.append("wr_ed", formData.wr_ed);
+        data.append("wr_eh", formData.wr_eh);
+        data.append("wr_ei", formData.wr_ei);
 
         if (file) {
             data.append("addfile1", file);
@@ -178,6 +226,65 @@ export default function Sedit() {
                         onChange={handleChange}
                         className="w_form_textarea"
                     />
+                </div>
+
+                <div>
+                    <label htmlFor="wr_eyear" className="block text-sm font-medium text-gray-700">마감일</label><br />
+                    <select
+                        name="wr_ey"
+                        value={formData.wr_ey || ""}
+                        onChange={handleChange}
+                        className="border border-gray-300 rounded-md px-2 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                    >
+                        <option value="">년도</option>
+                        {years.map((year) => (
+                            <option key={year} value={year}>{year}년</option>
+                        ))}
+                    </select>&nbsp;
+                    <select
+                        name="wr_em"
+                        value={formData.wr_em || ""}
+                        onChange={handleChange}
+                        className="border border-gray-300 rounded-md px-2 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                    >
+                        <option value="">월</option>
+                        {months.map((month) => (
+                            <option key={month} value={month}>{month}월</option>
+                        ))}
+                    </select>&nbsp;
+                    <select
+                        name="wr_ed"
+                        value={formData.wr_ed || ""}
+                        onChange={handleChange}
+                        className="border border-gray-300 rounded-md px-2 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                    >
+                        <option value="">일</option>
+                        {days.map((day) => (
+                            <option key={day} value={day}>{day}일</option>
+                        ))}
+                    </select>&nbsp;
+                    <select
+                        name="wr_eh"
+                        value={formData.wr_eh || ""}
+                        onChange={handleChange}
+                        className="border border-gray-300 rounded-md px-2 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                    >
+                        <option value="">시</option>
+                        {sigans.map((sigan) => (
+                            <option key={sigan} value={sigan}>{sigan}시</option>
+                        ))}
+                    </select>&nbsp;
+                    <select
+                        name="wr_ei"
+                        value={formData.wr_ei || ""}
+                        onChange={handleChange}
+                        className="border border-gray-300 rounded-md px-2 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                    >
+                        <option value="">분</option>
+                        {buns.map((bun) => (
+                            <option key={bun} value={bun}>{bun}분</option>
+                        ))}
+                    </select>
                 </div>
                 
                 <div>
