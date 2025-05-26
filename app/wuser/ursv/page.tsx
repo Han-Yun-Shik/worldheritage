@@ -458,7 +458,7 @@ export default function Ursv() {
                                             <div className="space-y-2">
                                                 <Label htmlFor="address" className="flex items-center">
                                                     <MapPin className="mr-1 h-4 w-4" />
-                                                    주소
+                                                    주소(<span className="text-red-500">동까지만 작성해주세요</span>)
                                                 </Label>
                                                 <input type="text" name="address" value={participant.address} onChange={(e) => handleParticipantChange(index, e)} className="w_form_input" />
                                             </div>

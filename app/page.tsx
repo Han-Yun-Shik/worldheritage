@@ -123,7 +123,7 @@ export default function Home() {
 
                 {/* 본문 */}
                 <div className="p-5 flex flex-col flex-1 justify-between">
-                  <h2 className="text-lg font-bold text-gray-800 truncate mb-2">{item.wr_shopnm}</h2>
+                  <h4 className="text-[17px] font-bold text-gray-800 mb-2">{item.wr_shopnm}</h4>
 
                   <div className="text-sm text-gray-600 flex items-start gap-2 mb-4">
                     <svg className="w-5 h-5 text-gray-400 shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" fill="none"
