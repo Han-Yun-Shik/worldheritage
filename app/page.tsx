@@ -113,7 +113,7 @@ export default function Home() {
                     alt={item.wr_shopnm}
                     className="w-full h-56 object-cover"
                   />
-                  {/* 마감 표시 */}
+                  {/* 마감 표시111 */}
                   {expired && (
                     <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10">
                       <span className="text-white text-2xl font-bold">마감</span>
