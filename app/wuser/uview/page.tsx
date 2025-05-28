@@ -297,45 +297,13 @@ export default function Uview() {
                         </div>
 
                         {/* 포함 사항 */}
-                        <div className="bg-white rounded-lg border p-6">
-                            <h4 className="text-lg font-medium mb-4 flex items-center gap-2">
-                                <span className="bg-primary/10 text-primary p-1.5 rounded-md">
-                                    <Users className="h-5 w-5" />
-                                </span>
-                                포함 사항
-                            </h4>
-
-                            <div className="whitespace-pre-line">
-                                {shopData[0]?.wr_include}
-                            </div>
-
-                        </div>
+                        
 
                         {/* 불포함 사항 */}
-                        <div className="bg-white rounded-lg border p-6">
-                            <h4 className="text-lg font-medium mb-4 flex items-center gap-2">
-                                <span className="bg-primary/10 text-primary p-1.5 rounded-md">
-                                    <Calendar className="h-5 w-5" />
-                                </span>
-                                불포함 사항
-                            </h4>
-                            <div className="whitespace-pre-line">
-                                {shopData[0]?.wr_noinclude}
-                            </div>
-                        </div>
+                        
 
                         {/* 유의 사항 */}
-                        <div className="bg-white rounded-lg border p-6">
-                            <h4 className="text-lg font-medium mb-4 flex items-center gap-2">
-                                <span className="bg-primary/10 text-primary p-1.5 rounded-md">
-                                    <AlertTriangle className="h-5 w-5" />
-                                </span>
-                                유의 사항
-                            </h4>
-                            <div className="whitespace-pre-line">
-                                {shopData[0]?.wr_note}
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
