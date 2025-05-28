@@ -180,6 +180,9 @@ export default function Rsvedit() {
     const nicerefund = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        const confirmed = window.confirm("정말로 결제를 취소하시겠습니까?");
+        if (!confirmed) return; // 취소 시 종료
+
         if (!formData) {
             alert("데이터가 없습니다.");
             return;
