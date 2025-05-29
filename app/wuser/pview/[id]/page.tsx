@@ -5,7 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import "@/styles/form.css"; // 스타일 파일 import
-import { WR_GENDER_ARR, FORMATAUTHDATE, FORMATCANCELDATE, REGDATE_YMDHIS_STR, REGDATE_YMDHIS_LIMIT_STR, CLOSEYMDHIS, isBeforeCloseDate } from "@/app/utils";
+import { WR_GENDER_ARR, FORMATAUTHDATE, FORMATCANCELDATE, REGDATE_YMDHIS_STR, REGDATE_YMDHIS_LIMIT_STR, WR_STATE_ARR, getStateButtonClass } from "@/app/utils";
 import Navi from "@/components/Navi";
 import { CardFooter } from "@/components/ui/card"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -94,6 +94,7 @@ interface ShopData {
     wr_ed: string;
     wr_eh: string;
     wr_ei: string;
+    wr_es: string;
     files: FileData[];
 }
 //--# 마감일 추출을 위한 e #--//
@@ -122,6 +123,7 @@ export default function Rsvedit() {
         wr_ed: "",
         wr_eh: "",
         wr_ei: "",
+        wr_es: "",
         files: [],
     });
     //--# 마감일 추출을 위한 e #--//
@@ -170,7 +172,27 @@ export default function Rsvedit() {
         }
     }, [formData]);
 
-    console.log("마감: ", magamData)
+    const isExpired = (item: ShopData): boolean => {
+        // 값이 모두 존재하지 않으면 마감 아님(false 반환)
+        if (
+            !item.wr_ey || !item.wr_em || !item.wr_ed ||
+            !item.wr_eh || !item.wr_ei || !item.wr_es
+        ) {
+            return false;
+        }
+
+        const deadline = new Date(
+            Number(item.wr_ey),
+            Number(item.wr_em) - 1,
+            Number(item.wr_ed),
+            Number(item.wr_eh),
+            Number(item.wr_ei),
+            Number(item.wr_es)
+        );
+
+        const now = new Date(); //// 한국 브라우저 환경 기준
+        return now > deadline;
+    };
     //--# 마감일 추출을 위한 e #--//
 
     //--########## Nice Pay s ##########--//
@@ -268,7 +290,7 @@ export default function Rsvedit() {
 
         const pay = formData.payinfo?.[0];
 
-        // 예약상태가 예약접수(1) 일때만 결제버튼 보임
+        // ✅ 예약상태가 예약접수(1)일 때만 결제 버튼 노출
         if (formData.wr_state === 1) {
             return (
                 <button onClick={nicepayrq} className="btn btn-secondary">
@@ -277,19 +299,12 @@ export default function Rsvedit() {
             );
         }
 
-        const hasAuthDate = !!pay.authdate;
-        const hasCancelDate = !!pay.canceldate;
-
-        // if (!hasAuthDate) {
-        //     return (
-        //         <button onClick={nicepayrq} className="btn btn-secondary">
-        //             Nice Pay 결제
-        //         </button>
-        //     );
-        // }
+        const hasAuthDate = !!pay?.authdate;
+        const hasCancelDate = !!pay?.canceldate;
+        const isBeforeDeadline = !isExpired(magamData); //마감일
 
         // ✅ 결제는 했지만 취소 안됨 + 마감일 이전일 경우에만 취소 버튼 노출
-        if (hasAuthDate && !hasCancelDate && isBeforeCloseDate()) {
+        if (hasAuthDate && !hasCancelDate && isBeforeDeadline) {
             return (
                 <button onClick={nicerefund} className="btn btn-secondary">
                     Nice Pay 취소
@@ -297,10 +312,9 @@ export default function Rsvedit() {
             );
         }
 
-        // 취소일시가 있으면 아무 버튼도 안 나옴
+        // 취소된 경우는 아무 버튼도 안나옴
         return null;
     };
-
 
     return (
         <div>
@@ -341,6 +355,12 @@ export default function Rsvedit() {
 
                                         <InfoItem icon={<Clock className="mr-2 h-4 w-4" />} label="유효시간">
                                             <span className="text-red-500">{REGDATE_YMDHIS_LIMIT_STR(formData.wr_regdate)}</span>
+                                        </InfoItem>
+
+                                        <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="진행상태">
+                                            <button className={`px-2 py-1 text-sm font-medium rounded ${getStateButtonClass(formData.wr_state)}`}>
+                                                                                            {WR_STATE_ARR[formData.wr_state] || "알수없음"}
+                                                                                        </button>
                                         </InfoItem>
 
                                         <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="이름">
