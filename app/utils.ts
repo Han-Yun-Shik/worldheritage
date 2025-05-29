@@ -110,11 +110,11 @@ export const getStateButtonClass = (state: number) => {
     }
 };
 
-export const CLOSEYMDHIS = "2025-06-20 23:59:59";
+export const CLOSEYMDHIS = "2025-06-02 09:59:59";
 
 // 현재 시간이 마감일 이전인지 여부 반환
 export function isBeforeCloseDate(): boolean {
   const now = new Date();
-  const closeDate = new Date("2025-06-20T23:59:59");
+  const closeDate = new Date("2025-06-02T09:59:59");
   return now <= closeDate;
 }

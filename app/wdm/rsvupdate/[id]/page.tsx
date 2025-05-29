@@ -223,8 +223,8 @@ export default function Rsvedit() {
         // 결제정보가 아예 없을 경우 => 결제 버튼
         if (!pay) {
             return (
-                <button onClick={nicepayrq} className="btn btn-secondary">
-                    Nice Pay 결제
+                <button onClick={nicepayrq} className="btn btn-danger">
+                    결제하기
                 </button>
             );
         }
@@ -235,7 +235,7 @@ export default function Rsvedit() {
         if (!hasAuthDate) {
             return (
                 <button onClick={nicepayrq} className="btn btn-secondary">
-                    Nice Pay 결제
+                    결제 취소하기
                 </button>
             );
         }

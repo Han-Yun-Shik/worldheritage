@@ -76,7 +76,11 @@ export default function Home() {
     return now > deadline;
   };
 
-
+  const isBeforeOpen = (): boolean => {
+    const now = new Date();
+    const openDate = new Date("2025-05-02T09:59:59"); // ISO 형식으로 변환
+    return now < openDate;
+  };
 
   if (loading) {
     return <p>Loading...</p>;
@@ -98,11 +102,17 @@ export default function Home() {
               <div
                 key={item.wr_seq}
                 onClick={() => {
+                  if (isBeforeOpen()) {
+                    alert("오픈전입니다.");
+                    return;
+                  }
+
                   if (expired) {
                     alert("마감되었습니다.");
-                  } else {
-                    router.push(`/wuser/ucalendar/${item.wr_shopcode}`);
+                    return;
                   }
+
+                  router.push(`/wuser/ucalendar/${item.wr_shopcode}`);
                 }}
                 className="relative cursor-pointer border rounded-2xl overflow-hidden shadow hover:shadow-lg transition-shadow bg-white flex flex-col"
               >
@@ -113,7 +123,14 @@ export default function Home() {
                     alt={item.wr_shopnm}
                     className="w-full h-56 object-cover"
                   />
-                  {/* 마감 표시111 */}
+                  {/* 오픈전 표시 */}
+                  {isBeforeOpen() && (
+                    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10">
+                      <span className="text-white text-2xl font-bold">오픈전입니다.</span>
+                    </div>
+                  )}
+
+                  {/* 마감 표시 */}
                   {expired && (
                     <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10">
                       <span className="text-white text-2xl font-bold">마감</span>
