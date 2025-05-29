@@ -359,8 +359,8 @@ export default function Rsvedit() {
 
                                         <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="진행상태">
                                             <button className={`px-2 py-1 text-sm font-medium rounded ${getStateButtonClass(formData.wr_state)}`}>
-                                                                                            {WR_STATE_ARR[formData.wr_state] || "알수없음"}
-                                                                                        </button>
+                                                {WR_STATE_ARR[formData.wr_state] || "알수없음"}
+                                            </button>
                                         </InfoItem>
 
                                         <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="이름">

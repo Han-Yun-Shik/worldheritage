@@ -207,9 +207,34 @@ export default function Ursv() {
         }
     };
 
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        // ✅ 신청자 정보 유효성 검사
+        const { wr_name, wr_age, wr_gender, wr_address, wr_email, wr_tel } = formData;
+
+        if (!wr_name || !wr_age || !wr_gender || !wr_address || !wr_email || !wr_tel) {
+            alert("신청자 정보를 모두 입력해 주세요.");
+            return;
+        }
+
+        if (!/^\d{2,3}\d{3,4}\d{4}$/.test(String(wr_tel))) {
+            alert("신청자 전화번호는 숫자만 입력하고 10~11자리여야 합니다.");
+            return;
+        }
+
+        // ✅ 참가자 정보 유효성 검사
+        for (let i = 0; i < participants.length; i++) {
+            const p = participants[i];
+            if (!p.name || !p.gender) {
+                alert(`참가자 ${i + 1}의 이름과 성별을 입력해 주세요.`);
+                return;
+            }
+            if (p.tel && !/^\d{10,11}$/.test(String(p.tel))) {
+                alert(`참가자 ${i + 1}의 전화번호는 숫자만 입력하고 10~11자리여야 합니다.`);
+                return;
+            }
+        }
 
         try {
             // 1. 예약 데이터 서버에 전송
@@ -220,7 +245,7 @@ export default function Ursv() {
             });
             setMessage(response.data.message);
 
-            // 1-2. 임시저장 데이터 삭제 (await 추가)
+            // 1-2. 임시저장 데이터 삭제
             await handletmpDelete(sessionId);
 
             // 2. 인증 요청
@@ -232,12 +257,12 @@ export default function Ursv() {
 
             // 4. 이동
             router.push("/wuser/plist");
-
         } catch (error) {
             console.error("제출 실패:", error);
             setMessage("데이터 전송 실패");
         }
     };
+
 
     return (
         <div>
@@ -245,7 +270,7 @@ export default function Ursv() {
 
             <div className="flex flex-col items-center justify-center mt-10 space-y-2">
                 <p className="text-gray-600 text-sm text-center">
-                    화면을 벗어나거나 제한시간 15분이 지나면 예약 자리가 취소됩니다.<br />시간 만료전에 신청서를 작성 후 제출해주세요 
+                    화면을 벗어나거나 제한시간 15분이 지나면 예약 자리가 취소됩니다.<br />시간 만료전에 신청서를 작성 후 제출해주세요
                 </p>
 
                 <div className="bg-red-100 text-red-700 font-mono text-3xl font-bold px-6 py-3 rounded-xl shadow-md animate-pulse">
