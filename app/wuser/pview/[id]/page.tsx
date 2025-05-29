@@ -293,8 +293,8 @@ export default function Rsvedit() {
         // ✅ 예약상태가 예약접수(1)일 때만 결제 버튼 노출
         if (formData.wr_state === 1) {
             return (
-                <button onClick={nicepayrq} className="btn btn-secondary">
-                    Nice Pay 결제
+                <button onClick={nicepayrq} className="btn btn-danger">
+                    결제하기
                 </button>
             );
         }
@@ -307,7 +307,7 @@ export default function Rsvedit() {
         if (hasAuthDate && !hasCancelDate && isBeforeDeadline) {
             return (
                 <button onClick={nicerefund} className="btn btn-secondary">
-                    Nice Pay 취소
+                    결제 취소하기
                 </button>
             );
         }
