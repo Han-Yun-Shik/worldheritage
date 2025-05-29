@@ -208,25 +208,26 @@ export default function Uview() {
                             <div className="flex items-center gap-2">
                                 <Calendar className="h-5 w-5 text-primary" />
                                 <div className="flex items-center gap-2">
-                                    <span className="text-sm text-muted-foreground">예약일자:</span>
-                                    <span className="font-medium">{REGDATE_YMD_STR(formData.wr_tourdate)}</span>
+                                    <span className="text-[19px] text-muted-foreground">예약일자:</span>
+                                    <span className="text-[19px] font-medium">{REGDATE_YMD_STR(formData.wr_tourdate)}</span>
                                 </div>
                             </div>
                             <div className="flex items-center gap-2">
                                 <Clock className="h-5 w-5 text-primary" />
                                 <div className="flex items-center gap-2">
-                                    <span className="text-sm text-muted-foreground">옵션명:</span>
-                                    <span className="font-medium">{formData.wr_optnm}</span>
+                                    <span className="text-[19px] text-muted-foreground">옵션명:</span>
+                                    <span className="text-[19px] font-medium">{formData.wr_optnm}</span>
                                 </div>
                             </div>
                             <div className="flex items-center gap-2">
                                 <Users className="h-5 w-5 text-primary" />
                                 <div className="flex items-center gap-2">
-                                    <span className="text-sm text-muted-foreground">예약인원:</span>
-                                    <span className="font-medium">{formData.wr_totinwon}명</span>
+                                    <span className="text-[19px] text-muted-foreground">예약인원:</span>
+                                    <span className="text-[19px] font-medium">{formData.wr_totinwon}명</span>
                                 </div>
                             </div>
                         </div>
+
                         <div className="mt-4 md:mt-0 md:ml-6 w-full md:w-auto">
                             {/* <Button size="lg" className="w-full md:w-auto text-lg px-8 py-6 h-auto font-bold">
                                 예약하기
@@ -241,33 +242,7 @@ export default function Uview() {
                             <p>👥 결제금액: {formData.wr_totprice}</p>
 
                             <p>예약폼</p> */}
-                            <form onSubmit={handleSubmit}>
-                                {/* <label htmlFor="wr_tourdate">예약 날짜:</label> */}
-                                <input type="hidden" name="wr_tourdate" id="wr_tourdate" className="w_form_input" value={formData.wr_tourdate} readOnly />
 
-                                {/* <label htmlFor="wr_shopcode">상품코드:</label> */}
-                                <input type="hidden" name="wr_shopcode" id="wr_shopcode" className="w_form_input" value={formData.wr_shopcode} readOnly />
-
-                                {/* <label htmlFor="wr_shopnm">상품명:</label> */}
-                                <input type="hidden" name="wr_shopnm" id="wr_shopnm" className="w_form_input" value={formData.wr_shopnm} readOnly />
-
-                                {/* <label htmlFor="wr_optcode">옵션 코드:</label> */}
-                                <input type="hidden" name="wr_optcode" id="wr_optcode" className="w_form_input" value={formData.wr_optcode} readOnly />
-
-                                {/* <label htmlFor="wr_optnm">옵션명:</label> */}
-                                <input type="hidden" name="wr_optnm" id="wr_optnm" className="w_form_input" value={formData.wr_optnm} readOnly />
-
-                                {/* <label htmlFor="wr_totinwon">예약인원:</label> */}
-                                <input type="hidden" name="wr_totinwon" id="wr_totinwon" className="w_form_input" value={formData.wr_totinwon} readOnly />
-
-                                {/* <label htmlFor="wr_price">금액:</label> */}
-                                <input type="hidden" name="wr_price" id="wr_price" className="w_form_input" value={formData.wr_price} readOnly />
-
-                                {/* <label htmlFor="wr_totprice">결제금액:</label> */}
-                                <input type="hidden" name="wr_totprice" id="wr_totprice" className="w_form_input" value={formData.wr_totprice} readOnly />
-
-                                <button type="submit" className="w_btn_submit">예약하기</button>
-                            </form>
                         </div>
                     </div>
                 </div>
@@ -312,7 +287,7 @@ export default function Uview() {
                         </div>
 
                         {/* 불포함 사항 */}
-                        
+
 
                         {/* 유의 사항 */}
                         <div className="bg-white rounded-lg border p-6">
@@ -326,9 +301,42 @@ export default function Uview() {
                                 {shopData[0]?.wr_note}
                             </div>
                         </div>
-                        
+
                     </div>
                 </div>
+
+                <div className="mt-2">
+
+                    <form onSubmit={handleSubmit}>
+                        {/* <label htmlFor="wr_tourdate">예약 날짜:</label> */}
+                        <input type="hidden" name="wr_tourdate" id="wr_tourdate" className="w_form_input" value={formData.wr_tourdate} readOnly />
+
+                        {/* <label htmlFor="wr_shopcode">상품코드:</label> */}
+                        <input type="hidden" name="wr_shopcode" id="wr_shopcode" className="w_form_input" value={formData.wr_shopcode} readOnly />
+
+                        {/* <label htmlFor="wr_shopnm">상품명:</label> */}
+                        <input type="hidden" name="wr_shopnm" id="wr_shopnm" className="w_form_input" value={formData.wr_shopnm} readOnly />
+
+                        {/* <label htmlFor="wr_optcode">옵션 코드:</label> */}
+                        <input type="hidden" name="wr_optcode" id="wr_optcode" className="w_form_input" value={formData.wr_optcode} readOnly />
+
+                        {/* <label htmlFor="wr_optnm">옵션명:</label> */}
+                        <input type="hidden" name="wr_optnm" id="wr_optnm" className="w_form_input" value={formData.wr_optnm} readOnly />
+
+                        {/* <label htmlFor="wr_totinwon">예약인원:</label> */}
+                        <input type="hidden" name="wr_totinwon" id="wr_totinwon" className="w_form_input" value={formData.wr_totinwon} readOnly />
+
+                        {/* <label htmlFor="wr_price">금액:</label> */}
+                        <input type="hidden" name="wr_price" id="wr_price" className="w_form_input" value={formData.wr_price} readOnly />
+
+                        {/* <label htmlFor="wr_totprice">결제금액:</label> */}
+                        <input type="hidden" name="wr_totprice" id="wr_totprice" className="w_form_input" value={formData.wr_totprice} readOnly />
+
+                        <button type="submit" className="w_btn_submit">예약하기</button>
+                    </form>
+                    
+                </div>
+
             </div>
 
 
