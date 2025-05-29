@@ -5,7 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import "@/styles/form.css"; // 스타일 파일 import
-import { REGDATE_STR, WR_STATE_ARR, WR_GENDER_ARR, FORMATAUTHDATE, FORMATCANCELDATE, REGDATE_YMDHIS_STR, REGDATE_YMDHIS_LIMIT_STR } from "@/app/utils";
+import { WR_GENDER_ARR, FORMATAUTHDATE, FORMATCANCELDATE, REGDATE_YMDHIS_STR, REGDATE_YMDHIS_LIMIT_STR, CLOSEYMDHIS, isBeforeCloseDate } from "@/app/utils";
 import Navi from "@/components/Navi";
 import { CardFooter } from "@/components/ui/card"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -61,6 +61,7 @@ interface RsvData {
     wr_state: number;
     wr_regdate: string;
     wr_update: string;
+    wr_shopcode: string; // 마감일 추출을 위한
     wr_shopnm: string;
     wr_optnm: string;
     wr_totinwon: number;
@@ -70,12 +71,60 @@ interface RsvData {
     payinfo: PayData[];
 }
 
+//--# 마감일 추출을 위한 s #--//
+interface FileData {
+    file_seq: number;
+    wr_code: string;
+    file_path: string;
+}
+
+interface ShopData {
+    wr_shopcode: string;
+    wr_shopnm: string;
+    wr_intro: string;
+    wr_content: string;
+    wr_include: string;
+    wr_noinclude: string;
+    wr_note: string;
+    wr_price: number;
+    wr_maxinwon: number;
+    wr_days: string;
+    wr_ey: string;
+    wr_em: string;
+    wr_ed: string;
+    wr_eh: string;
+    wr_ei: string;
+    files: FileData[];
+}
+//--# 마감일 추출을 위한 e #--//
+
 export default function Rsvedit() {
     const router = useRouter();
     const { id } = useParams();
     const [formData, setFormData] = useState<RsvData | null>(null);
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(true);
+
+    //--# 마감일 추출을 위한 s #--//
+    const [magamData, setMagamData] = useState<ShopData>({
+        wr_shopcode: "",
+        wr_shopnm: "",
+        wr_intro: "",
+        wr_content: "",
+        wr_include: "",
+        wr_noinclude: "",
+        wr_note: "",
+        wr_price: 0,
+        wr_maxinwon: 0,
+        wr_days: "",
+        wr_ey: "",
+        wr_em: "",
+        wr_ed: "",
+        wr_eh: "",
+        wr_ei: "",
+        files: [],
+    });
+    //--# 마감일 추출을 위한 e #--//
 
     // ✅ fetchData 함수 useCallback으로 추출
     const fetchData = useCallback(async () => {
@@ -99,6 +148,30 @@ export default function Rsvedit() {
             fetchData();
         }
     }, [id, fetchData]);
+
+    //--# 마감일 추출을 위한 s #--//
+    useEffect(() => {
+        async function magamfetchData() {
+            try {
+                const res = await axios.get(`/api/wdm/sread?id=${formData?.wr_shopcode}`);
+                if (res.data && res.data.length > 0) {
+                    setMagamData(res.data[0]);
+                    console.log("마감 데이터:", res.data[0]);
+                } else {
+                    console.error("마감 데이터가 없습니다:", res.data);
+                }
+            } catch (error) {
+                console.error("마감 데이터 불러오기 오류:", error);
+            }
+        }
+
+        if (formData && formData.wr_shopcode) {
+            magamfetchData(); // ✅ 함수 실행
+        }
+    }, [formData]);
+
+    console.log("마감: ", magamData)
+    //--# 마감일 추출을 위한 e #--//
 
     //--########## Nice Pay s ##########--//
     // ✅ 결제 완료 메시지 수신 시 fetchData만 실행
@@ -160,6 +233,9 @@ export default function Rsvedit() {
     const nicerefund = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        const confirmed = window.confirm("정말로 결제를 취소하시겠습니까?");
+        if (!confirmed) return; // 취소 시 종료
+
         try {
             const res = await axios.post("/api/wdm/nicerefund", {
                 tidfield: formData.payinfo[0].tid,
@@ -180,14 +256,49 @@ export default function Rsvedit() {
 
     // 승인일시 및 취소일시 여부에 따라 버튼을 렌더링합니다.
     const renderPaymentButtons = () => {
-        if (formData.wr_state !== 1) return null; // ✅ 상태가 1이 아니면 아무 것도 렌더링하지 않음
+        if (!formData) {
+            alert("데이터가 없습니다.");
+            return;
+        }
 
+        // ✅ 총 결제금액이 0이면 버튼 안보이게 처리
+        if (formData.wr_totprice === 0) {
+            return null;
+        }
 
-        return (
-            <button onClick={nicepayrq} className="btn btn-secondary">
-                Nice Pay 결제
-            </button>
-        );
+        const pay = formData.payinfo?.[0];
+
+        // 예약상태가 예약접수(1) 일때만 결제버튼 보임
+        if (formData.wr_state === 1) {
+            return (
+                <button onClick={nicepayrq} className="btn btn-secondary">
+                    Nice Pay 결제
+                </button>
+            );
+        }
+
+        const hasAuthDate = !!pay.authdate;
+        const hasCancelDate = !!pay.canceldate;
+
+        // if (!hasAuthDate) {
+        //     return (
+        //         <button onClick={nicepayrq} className="btn btn-secondary">
+        //             Nice Pay 결제
+        //         </button>
+        //     );
+        // }
+
+        // ✅ 결제는 했지만 취소 안됨 + 마감일 이전일 경우에만 취소 버튼 노출
+        if (hasAuthDate && !hasCancelDate && isBeforeCloseDate()) {
+            return (
+                <button onClick={nicerefund} className="btn btn-secondary">
+                    Nice Pay 취소
+                </button>
+            );
+        }
+
+        // 취소일시가 있으면 아무 버튼도 안 나옴
+        return null;
     };
 
 
@@ -231,7 +342,7 @@ export default function Rsvedit() {
                                         <InfoItem icon={<Clock className="mr-2 h-4 w-4" />} label="유효시간">
                                             <span className="text-red-500">{REGDATE_YMDHIS_LIMIT_STR(formData.wr_regdate)}</span>
                                         </InfoItem>
-                                        
+
                                         <InfoItem icon={<User className="mr-2 h-4 w-4" />} label="이름">
                                             {formData.wr_name}
                                         </InfoItem>

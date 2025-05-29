@@ -139,6 +139,12 @@ export default function Plist() {
                                                         결제/보기
                                                     </Link>
                                                 )}
+                                                <Link
+                                                    href={`/wuser/pview/${item.wr_code}`}
+                                                    className="inline-block px-2 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition"
+                                                >
+                                                    임시보기
+                                                </Link>
 
                                             </td>
                                         </tr>

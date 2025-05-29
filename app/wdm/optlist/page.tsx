@@ -25,7 +25,7 @@ export default function Slist() {
     const [shopcode, setShopcode] = useState("");
     const [totalCount, setTotalCount] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5);
+    const [itemsPerPage] = useState(50);
 
     const totalPages = Math.ceil(totalCount / itemsPerPage);
 

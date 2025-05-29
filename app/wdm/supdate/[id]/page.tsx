@@ -300,7 +300,7 @@ export default function Sedit() {
                 </div>
 
                 <div>
-                    <label htmlFor="wr_include" className="block text-sm font-medium text-gray-700">포함사항</label>
+                    <label htmlFor="wr_include" className="block text-sm font-medium text-gray-700">상품요약</label>
                     <textarea
                         name="wr_include"
                         id="wr_include"

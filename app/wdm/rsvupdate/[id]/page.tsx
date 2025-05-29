@@ -213,6 +213,11 @@ export default function Rsvedit() {
             return;
         }
 
+        // ✅ 총 결제금액이 0이면 버튼 안보이게 처리
+        if (formData.wr_totprice === 0) {
+            return null;
+        }
+
         const pay = formData.payinfo?.[0];
 
         // 결제정보가 아예 없을 경우 => 결제 버튼

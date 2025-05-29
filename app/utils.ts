@@ -109,3 +109,12 @@ export const getStateButtonClass = (state: number) => {
             return "bg-gray-300 text-gray-700";
     }
 };
+
+export const CLOSEYMDHIS = "2025-06-20 23:59:59";
+
+// 현재 시간이 마감일 이전인지 여부 반환
+export function isBeforeCloseDate(): boolean {
+  const now = new Date();
+  const closeDate = new Date("2025-06-20T23:59:59");
+  return now <= closeDate;
+}
