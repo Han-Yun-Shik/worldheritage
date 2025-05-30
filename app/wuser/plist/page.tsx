@@ -88,7 +88,7 @@ export default function Plist() {
                                 />
                             </svg>
                             <p className="leading-relaxed">
-                                <strong className="font-semibold">주의:</strong> 결제/보기 버튼을 클릭 후 유효시간(15분) 내에 결제를 해야 예약이 완료됩니다.
+                                <strong className="font-semibold">주의:</strong> 결제/보기 버튼을 클릭 후 유효시간(30분) 내에 결제를 해야 예약이 완료됩니다.
                             </p>
                         </div>
 
