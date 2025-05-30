@@ -156,10 +156,6 @@ export default function Uview() {
         }
     };
 
-    const setIsDetailOpen = () => {
-
-    }
-
 
     return (
         <div>
