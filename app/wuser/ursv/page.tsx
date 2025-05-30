@@ -40,7 +40,7 @@ export default function Ursv() {
     const [agreed, setAgreed] = useState(false)
     const [isSelfParticipant, setIsSelfParticipant] = useState(false);
     const [message, setMessage] = useState("");
-    const [secondsLeft, setSecondsLeft] = useState(900); // 5분 = 300초
+    const [secondsLeft, setSecondsLeft] = useState(1800); // 30분 = 1800초
     const { isLoggedIn, userName, sessionId, logout } = useLogin();
 
     //--########## 카운트다운 s ##########--//
@@ -226,12 +226,28 @@ export default function Ursv() {
         // ✅ 참가자 정보 유효성 검사
         for (let i = 0; i < participants.length; i++) {
             const p = participants[i];
-            if (!p.name || !p.gender) {
-                alert(`참가자 ${i + 1}의 이름과 성별을 입력해 주세요.`);
+            if (!p.name) {
+                alert(`참가자 ${i + 1}의 이름을 입력해 주세요.`);
                 return;
             }
-            if (p.tel && !/^\d{10,11}$/.test(String(p.tel))) {
-                alert(`참가자 ${i + 1}의 전화번호는 숫자만 입력하고 10~11자리여야 합니다.`);
+            // 나이 검사 (숫자, 1~120세)
+            if (!p.age || isNaN(Number(p.age)) || Number(p.age) <= 0 || Number(p.age) > 120) {
+                alert(`참가자 ${i + 1}의 나이를 올바르게 입력해 주세요. (숫자, 1~120 사이)`);
+                return;
+            }
+
+            if (!p.gender) {
+                alert(`참가자 ${i + 1}의 성별을 입력해 주세요.`);
+                return;
+            }
+
+            // 주소 검사
+            if (!p.address || p.address.length < 2) {
+                alert(`참가자 ${i + 1}의 주소를 입력해 주세요.`);
+                return;
+            }
+            if (!p.tel) {
+                alert(`참가자 ${i + 1}의 전화번호를 입력해 주세요.`);
                 return;
             }
         }
@@ -270,7 +286,7 @@ export default function Ursv() {
 
             <div className="flex flex-col items-center justify-center mt-10 space-y-2">
                 <p className="text-gray-600 text-sm text-center">
-                    화면을 벗어나거나 제한시간 15분이 지나면 예약 자리가 취소됩니다.<br />시간 만료전에 신청서를 작성 후 제출해주세요
+                    화면을 벗어나거나 제한시간 30분이 지나면 예약 자리가 취소됩니다.<br />시간 만료전에 신청서를 작성 후 제출해주세요
                 </p>
 
                 <div className="bg-red-100 text-red-700 font-mono text-3xl font-bold px-6 py-3 rounded-xl shadow-md animate-pulse">

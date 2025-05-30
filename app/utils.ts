@@ -33,8 +33,8 @@ export const REGDATE_YMDHIS_LIMIT_STR = (dateStr: string): string => {
 
   const date = new Date(year, month, day, hour, minute, second);
 
-  // 15분 추가
-  date.setMinutes(date.getMinutes() + 15);
+  // 30분 추가
+  date.setMinutes(date.getMinutes() + 30);
 
   // 날짜 포맷팅 (예: 2025-05-14 15:28:02)
   const pad = (n: number) => n.toString().padStart(2, "0");
