@@ -87,8 +87,17 @@ export default function Home() {
   };
 
   if (loading) {
-    return <p>Loading...</p>;
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen gap-4">
+        {/* 스피너 */}
+        <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin" />
+
+        {/* 텍스트 */}
+        <p className="text-xl font-semibold text-gray-600">로딩 중입니다...</p>
+      </div>
+    );
   }
+
 
   return (
     <div>
@@ -113,11 +122,12 @@ export default function Home() {
 
             <div className="mb-6">
               <div
-                className="text-sm text-gray-700 whitespace-pre-wrap"
+                className="text-sm text-gray-700"
                 dangerouslySetInnerHTML={{
-                  __html: selectedItem.wr_content || "",
+                  __html: (selectedItem.wr_content || "").replace(/\n/g, ""),
                 }}
               />
+
             </div>
 
             <div className="mb-6 px-[30px]">

@@ -259,7 +259,7 @@ export default function Uview() {
 
                                 <div
                                     dangerouslySetInnerHTML={{
-                                        __html: shopData[0]?.wr_content || "",
+                                        __html: (shopData[0]?.wr_content || "").replace(/\n/g, ""),
                                     }}
                                 ></div>
 
