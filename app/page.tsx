@@ -151,7 +151,7 @@ export default function Home() {
                     <span className="line-clamp-2">{item.wr_intro}</span>
                   </div>
 
-                  <div className="flex justify-between text-sm text-gray-700 mb-3">
+                  {/* <div className="flex justify-between text-sm text-gray-700 mb-3">
                     <div className="flex items-center gap-2">
                       <svg className="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
                         viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1">
@@ -163,10 +163,10 @@ export default function Home() {
                     <div className={isFull || expired ? "text-red-500 font-semibold" : "text-emerald-600 font-semibold"}>
                       {isFull || expired ? "마감" : `잔여 ${remaining}명`}
                     </div>
-                  </div>
+                  </div> */}
 
                   <div className="text-right text-lg font-bold text-blue-600">
-                    {item.wr_price.toLocaleString()}원
+                    <span className="text-[17px] text-black">1인 참가비</span> {item.wr_price.toLocaleString()}원
                   </div>
                 </div>
               </div>
