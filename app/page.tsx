@@ -166,7 +166,8 @@ export default function Home() {
                   </div> */}
 
                   <div className="text-right text-lg font-bold text-blue-600">
-                    <span className="text-[17px] text-black">1인 참가비</span> {item.wr_price.toLocaleString()}원
+                    <span className="text-[17px] text-black">1인 참가비</span>{" "}
+                    {item.wr_price === 0 ? "무료" : `${item.wr_price.toLocaleString()}원`}
                   </div>
                 </div>
               </div>
