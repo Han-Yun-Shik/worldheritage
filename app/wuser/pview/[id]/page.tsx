@@ -276,6 +276,25 @@ export default function Rsvedit() {
     };
     //--########## Nice Pay e ##########--//
 
+    // 참여취소
+    const handleCancel = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        const confirmed = window.confirm("정말로 참여를 취소하시겠습니까?");
+        if (!confirmed) return;
+
+        try {
+            const res = await axios.put(`/api/wdm/rsvcancel?id=${id}`); // ✅ formData 제거
+            if (res.status === 200) {
+                fetchData();
+                setMessage("참여가 취소되었습니다.");
+            }
+        } catch (error) {
+            console.error("참여 취소 중 오류 발생:", error);
+            setMessage("참여 취소 실패. 다시 시도해주세요.");
+        }
+    };
+
     // 승인일시 및 취소일시 여부에 따라 버튼을 렌더링합니다.
     const renderPaymentButtons = () => {
         if (!formData) {
@@ -284,8 +303,12 @@ export default function Rsvedit() {
         }
 
         // ✅ 총 결제금액이 0이면 버튼 안보이게 처리
-        if (formData.wr_totprice === 0) {
-            return null;
+        if (formData.wr_totprice === 0 && formData.wr_state === 2) {
+            return (
+                <button onClick={handleCancel} className="btn btn-secondary">
+                    참여취소
+                </button>
+            );
         }
 
         const pay = formData.payinfo?.[0];
