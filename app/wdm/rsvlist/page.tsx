@@ -5,6 +5,7 @@ import axios from "axios";
 import Link from "next/link";
 import { REGDATE_STR, WR_STATE_ARR, getStateButtonClass, REGDATE_YMDHIS_STR, REGDATE_YMDHIS_LIMIT_STR } from "@/app/utils";
 import { useSearchParams, useRouter } from "next/navigation";
+import { useLogin } from "@/context/LoginContext";
 
 interface RsvData {
   wr_seq: number;
@@ -28,12 +29,22 @@ export default function Rsvlist() {
   const [name, setName] = useState("");
   const [state, setState] = useState("");
   const [tourdate, setTourdate] = useState("");
+  const { isLoggedIn, userName, sessionId, logout } = useLogin();
 
   const [totalCount, setTotalCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(20);
 
   const totalPages = Math.ceil(totalCount / itemsPerPage);
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      alert("관리자 영역입니다.");
+      router.push("/");
+    }
+  }, [isLoggedIn, router]);
+
+  if (!isLoggedIn) return null; // 리디렉션 중 렌더링 방지
 
   const fetchData = async (searchParamsObj?: {
     shopnm?: string;
