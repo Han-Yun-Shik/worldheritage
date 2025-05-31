@@ -214,6 +214,7 @@ export default function Home() {
                     {/* <span className="line-clamp-2">{item.wr_intro}</span> */}
                     <div
                       className="whitespace-pre-wrap break-words"
+                      style={{ letterSpacing: "-1px" }}
                       dangerouslySetInnerHTML={{
                         __html: (item.wr_intro || "").replace(/\n/g, ""),
                       }}
