@@ -203,7 +203,10 @@ export default function Ucalendar() {
         let days: React.ReactElement[] = [];
 
         const createDayCell = (key: string | number, content?: React.ReactNode) => (
-            <td key={key} className="bg-gray-100 h-[110px] border border-gray-300"></td>
+            <td
+                key={key}
+                className="border border-gray-300 h-20 md:h-[110px] align-top bg-gray-100"
+            ></td>
         );
 
         for (let i = 0; i < firstDay; i++) {
@@ -221,25 +224,33 @@ export default function Ucalendar() {
 
             days.push(
                 <td
-                    key={day}
-                    onClick={isAllowed ? () => handleDateClick(day) : undefined}
-                    className={`
-    h-[110px] border border-gray-300 align-top p-1 transition
+  key={day}
+  onClick={isAllowed ? () => handleDateClick(day) : undefined}
+  className={`
+    border border-gray-300 align-top p-1 transition
+    h-[70px] md:h-[110px] overflow-hidden
     ${isAllowed
-                            ? isSelected
-                                ? "bg-blue-500 text-white cursor-pointer" // ✅ 선택된 날짜: 파란 배경
-                                : "bg-green-500 text-white cursor-pointer hover:brightness-110"
-                            : "bg-white text-gray-400 cursor-not-allowed"}
+      ? isSelected
+        ? "bg-blue-500 text-white cursor-pointer"
+        : "bg-green-500 text-white cursor-pointer hover:brightness-110"
+      : "bg-white text-gray-400 cursor-not-allowed"
+    }
   `}
-                >
-                    <div className="font-semibold">{day}</div>
-                    {isAllowed && (
-                        <div className={`mt-1 text-xs rounded p-2 leading-snug ${isSelected ? "bg-blue-700" : "bg-green-700"} text-white`}>
-                            {/* 예약됨 {reserved}명<br /> */}
-                            가능 {available}명
-                        </div>
-                    )}
-                </td>
+>
+  <div className="flex flex-col h-full justify-start">
+    <div className="font-semibold text-[12px] md:text-sm">{day}</div>
+    {isAllowed && (
+      <div
+        className={`mt-auto text-[10px] md:text-xs rounded p-1 leading-snug
+        ${isSelected ? "bg-blue-700" : "bg-green-700"} text-white`}
+      >
+        가능 {available}명
+      </div>
+    )}
+  </div>
+</td>
+
+
 
             );
 
@@ -310,24 +321,26 @@ export default function Ucalendar() {
                         </div>
 
                         {/* 달력 테이블 */}
-                        <div className="overflow-x-auto">
-                            <table className="w-full table-fixed border">
+                        <div className="w-full max-w-full overflow-x-auto md:overflow-visible">
+                            <table className="w-full table-auto border border-gray-300 text-sm md:text-base">
                                 <thead>
-                                    <tr className="bg-gray-100 text-gray-700 text-sm">
-                                        <th className="py-2 w-[14.2857%] text-center border border-gray-300">일</th>
-                                        <th className="py-2 w-[14.2857%] text-center border border-gray-300">월</th>
-                                        <th className="py-2 w-[14.2857%] text-center border border-gray-300">화</th>
-                                        <th className="py-2 w-[14.2857%] text-center border border-gray-300">수</th>
-                                        <th className="py-2 w-[14.2857%] text-center border border-gray-300">목</th>
-                                        <th className="py-2 w-[14.2857%] text-center border border-gray-300">금</th>
-                                        <th className="py-2 w-[14.2857%] text-center border border-gray-300">토</th>
+                                    <tr className="bg-gray-100 text-gray-700">
+                                        {["일", "월", "화", "수", "목", "금", "토"].map((day, i) => (
+                                            <th
+                                                key={i}
+                                                className="py-2 px-1 text-center border border-gray-300 w-[14.2857%]"
+                                            >
+                                                {day}
+                                            </th>
+                                        ))}
                                     </tr>
                                 </thead>
-                                <tbody className="text-sm">
+                                <tbody>
                                     {generateCalendar()}
                                 </tbody>
                             </table>
                         </div>
+
                     </div>
 
                     {/* 선택된 날짜 관련 옵션 표시 영역 */}
