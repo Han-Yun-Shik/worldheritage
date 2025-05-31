@@ -216,30 +216,33 @@ export default function Uview() {
 
                 {/* 예약 정보 및 예약하기 버튼 */}
                 <div className="w-full mx-auto mt-6 mb-6">
-                    <div className="bg-white rounded-lg border p-4 flex flex-col md:flex-row items-center">
+                    <div className="bg-white rounded-lg border p-4 flex flex-col md:flex-row items-start">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 flex-1">
                             <div className="flex items-center gap-2">
                                 <Calendar className="h-5 w-5 text-primary" />
                                 <div className="flex items-center gap-2">
-                                    <span className="text-[19px] text-muted-foreground">예약일자:</span>
-                                    <span className="text-[19px] font-medium">{REGDATE_YMD_STR(formData.wr_tourdate)}</span>
+                                    <span className="text-[15px] md:text-[19px] text-muted-foreground">예약일자:</span>
+                                    <span className="text-[15px] md:text-[19px] font-medium">{REGDATE_YMD_STR(formData.wr_tourdate)}</span>
                                 </div>
                             </div>
+
                             <div className="flex items-center gap-2">
                                 <Clock className="h-5 w-5 text-primary" />
                                 <div className="flex items-center gap-2">
-                                    <span className="text-[19px] text-muted-foreground">옵션명:</span>
-                                    <span className="text-[19px] font-medium">{formData.wr_optnm}</span>
+                                    <span className="text-[15px] md:text-[19px] text-muted-foreground">옵션명:</span>
+                                    <span className="text-[15px] md:text-[19px] font-medium">{formData.wr_optnm}</span>
                                 </div>
                             </div>
+
                             <div className="flex items-center gap-2">
                                 <Users className="h-5 w-5 text-primary" />
                                 <div className="flex items-center gap-2">
-                                    <span className="text-[19px] text-muted-foreground">예약인원:</span>
-                                    <span className="text-[19px] font-medium">{formData.wr_totinwon}명</span>
+                                    <span className="text-[15px] md:text-[19px] text-muted-foreground">예약인원:</span>
+                                    <span className="text-[15px] md:text-[19px] font-medium">{formData.wr_totinwon}명</span>
                                 </div>
                             </div>
                         </div>
+
 
                         <div className="mt-4 md:mt-0 md:ml-6 w-full md:w-auto">
                             {/* <Button size="lg" className="w-full md:w-auto text-lg px-8 py-6 h-auto font-bold">

@@ -244,7 +244,7 @@ export default function Ucalendar() {
                                 className={`mt-auto text-[10px] md:text-xs rounded p-1 leading-snug
         ${isSelected ? "bg-blue-700" : "bg-green-700"} text-white`}
                             >
-                                가능 {available}명
+                                {available}
                             </div>
                         )}
                     </div>
