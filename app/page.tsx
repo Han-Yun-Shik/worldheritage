@@ -110,7 +110,7 @@ export default function Home() {
           onClick={() => setSelectedItem(null)} // 배경 클릭 시 닫힘
         >
           <div
-            className="bg-white p-6 rounded-lg w-[1000px] max-w-[90%] h-[900px] overflow-y-auto relative"
+            className="mt-50 mb-20 bg-white p-6 rounded-lg w-[1000px] max-w-[90%] h-[800px] overflow-y-auto relative"
             onClick={(e) => e.stopPropagation()} // 내용 클릭 시 배경 클릭 이벤트 방지
           >
             <button
@@ -137,7 +137,7 @@ export default function Home() {
               <p className="text-[17px] text-gray-700 whitespace-pre-wrap">{selectedItem.wr_include}</p>
             </div>
 
-            <div className="px-[30px]">
+            <div className="px-[30px] mb-20">
               <p className="font-semibold mb-1 bg-gray-700 text-white rounded-md px-3 py-1 inline-block">유의사항</p>
               <p className="text-[17px] text-gray-700 whitespace-pre-wrap">{selectedItem.wr_note}</p>
             </div>
