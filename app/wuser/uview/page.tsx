@@ -204,7 +204,7 @@ export default function Uview() {
                                 {shopData[0]?.wr_intro ?? ""}
                             </p> */}
                             <div
-                                className="whitespace-pre-wrap break-words"
+                                className="text-gray-700 whitespace-pre-wrap break-words"
                                 style={{ letterSpacing: "-1px" }}
                                 dangerouslySetInnerHTML={{
                                     __html: (shopData[0]?.wr_intro || "").replace(/\n/g, ""),
@@ -221,24 +221,24 @@ export default function Uview() {
                             <div className="flex items-center gap-2">
                                 <Calendar className="h-5 w-5 text-primary" />
                                 <div className="flex items-center gap-2">
-                                    <span className="text-[15px] md:text-[19px] text-muted-foreground">예약일자:</span>
-                                    <span className="text-[15px] md:text-[19px] font-medium">{REGDATE_YMD_STR(formData.wr_tourdate)}</span>
+                                    <span className="text-[15px] text-gray-700 md:text-[19px] text-muted-foreground">예약일자:</span>
+                                    <span className="text-[15px] text-gray-700 md:text-[19px] font-medium">{REGDATE_YMD_STR(formData.wr_tourdate)}</span>
                                 </div>
                             </div>
 
                             <div className="flex items-center gap-2">
                                 <Clock className="h-5 w-5 text-primary" />
                                 <div className="flex items-center gap-2">
-                                    <span className="text-[15px] md:text-[19px] text-muted-foreground">옵션명:</span>
-                                    <span className="text-[15px] md:text-[19px] font-medium">{formData.wr_optnm}</span>
+                                    <span className="text-[15px] text-gray-700 md:text-[19px] text-muted-foreground">옵션명:</span>
+                                    <span className="text-[15px] text-gray-700 md:text-[19px] font-medium">{formData.wr_optnm}</span>
                                 </div>
                             </div>
 
                             <div className="flex items-center gap-2">
                                 <Users className="h-5 w-5 text-primary" />
                                 <div className="flex items-center gap-2">
-                                    <span className="text-[15px] md:text-[19px] text-muted-foreground">예약인원:</span>
-                                    <span className="text-[15px] md:text-[19px] font-medium">{formData.wr_totinwon}명</span>
+                                    <span className="text-[15px] text-gray-700 md:text-[19px] text-muted-foreground">예약인원:</span>
+                                    <span className="text-[15px] text-gray-700 md:text-[19px] font-medium">{formData.wr_totinwon}명</span>
                                 </div>
                             </div>
                         </div>
