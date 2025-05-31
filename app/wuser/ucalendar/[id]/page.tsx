@@ -224,31 +224,31 @@ export default function Ucalendar() {
 
             days.push(
                 <td
-  key={day}
-  onClick={isAllowed ? () => handleDateClick(day) : undefined}
-  className={`
+                    key={day}
+                    onClick={isAllowed ? () => handleDateClick(day) : undefined}
+                    className={`
     border border-gray-300 align-top p-1 transition
     h-[70px] md:h-[110px] overflow-hidden
     ${isAllowed
-      ? isSelected
-        ? "bg-blue-500 text-white cursor-pointer"
-        : "bg-green-500 text-white cursor-pointer hover:brightness-110"
-      : "bg-white text-gray-400 cursor-not-allowed"
-    }
+                            ? isSelected
+                                ? "bg-blue-500 text-white cursor-pointer"
+                                : "bg-green-500 text-white cursor-pointer hover:brightness-110"
+                            : "bg-white text-gray-400 cursor-not-allowed"
+                        }
   `}
->
-  <div className="flex flex-col h-full justify-start">
-    <div className="font-semibold text-[12px] md:text-sm">{day}</div>
-    {isAllowed && (
-      <div
-        className={`mt-auto text-[10px] md:text-xs rounded p-1 leading-snug
+                >
+                    <div className="flex flex-col h-full justify-start">
+                        <div className="font-semibold text-[12px] md:text-sm">{day}</div>
+                        {isAllowed && (
+                            <div
+                                className={`mt-auto text-[10px] md:text-xs rounded p-1 leading-snug
         ${isSelected ? "bg-blue-700" : "bg-green-700"} text-white`}
-      >
-        가능 {available}명
-      </div>
-    )}
-  </div>
-</td>
+                            >
+                                가능 {available}명
+                            </div>
+                        )}
+                    </div>
+                </td>
 
 
 
@@ -296,7 +296,13 @@ export default function Ucalendar() {
                             <span className="bg-transparent text-black p-1.5 rounded-md">
                                 <i className="fas fa-calendar-alt h-5 w-5"></i>
                             </span>
-                            {shopData[0]?.wr_shopnm ?? null}
+                            {/* {shopData[0]?.wr_shopnm ?? null} */}
+                            <div
+                                className="text-[21px] font-bold text-gray-800 mb-2"
+                                dangerouslySetInnerHTML={{
+                                    __html: (shopData[0]?.wr_shopnm || "").replace(/\n/g, ""),
+                                }}
+                            />
                         </h3>
                     </div>
 

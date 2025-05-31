@@ -176,7 +176,17 @@ export default function Uview() {
 
                             </div>
                             <div className="flex-1">
-                                <CardTitle className="text-2xl">{formData.wr_shopnm}</CardTitle>
+                                <CardTitle className="text-2xl">
+
+                                    {/* {formData.wr_shopnm} */}
+                                    <div
+                                        className="text-[21px] font-bold text-gray-800 mb-2"
+                                        dangerouslySetInnerHTML={{
+                                            __html: (formData?.wr_shopnm || "").replace(/\n/g, ""),
+                                        }}
+                                    />
+
+                                </CardTitle>
                                 <CardDescription className="mt-2 flex items-center gap-2">
                                     <Calendar className="h-4 w-4" />
                                     <span>{REGDATE_YMD_STR(formData.wr_tourdate)}</span>
@@ -190,9 +200,16 @@ export default function Uview() {
                     </CardHeader>
                     <CardContent>
                         <div className="prose max-w-none">
-                            <p>
+                            {/* <p>
                                 {shopData[0]?.wr_intro ?? ""}
-                            </p>
+                            </p> */}
+                            <div
+                                className="whitespace-pre-wrap break-words"
+                                style={{ letterSpacing: "-1px" }}
+                                dangerouslySetInnerHTML={{
+                                    __html: (shopData[0]?.wr_intro || "").replace(/\n/g, ""),
+                                }}
+                            />
                         </div>
                     </CardContent>
                 </Card>
@@ -330,7 +347,7 @@ export default function Uview() {
 
                         <button type="submit" className="w_btn_submit">예약하기</button>
                     </form>
-                    
+
                 </div>
 
             </div>
