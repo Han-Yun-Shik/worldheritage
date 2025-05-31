@@ -115,7 +115,7 @@ export default function Home() {
           >
             <button
               onClick={() => setSelectedItem(null)}
-              className="absolute top-2 right-2 bg-black text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-gray-800"
+              className="absolute top-10 right-2 bg-black text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-gray-800"
             >
               &times;
             </button>
