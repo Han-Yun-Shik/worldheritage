@@ -110,7 +110,7 @@ export default function Home() {
           onClick={() => setSelectedItem(null)} // 배경 클릭 시 닫힘
         >
           <div
-            className="mt-50 mb-20 bg-white p-6 rounded-lg w-[1000px] max-w-[90%] h-[800px] overflow-y-auto relative"
+            className="mt-[150px] md:mt-[50px] mb-20 bg-white p-6 rounded-lg w-[1000px] max-w-[90%] h-[800px] overflow-y-auto relative"
             onClick={(e) => e.stopPropagation()} // 내용 클릭 시 배경 클릭 이벤트 방지
           >
             <button
