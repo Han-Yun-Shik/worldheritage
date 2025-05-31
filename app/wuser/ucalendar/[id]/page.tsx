@@ -205,7 +205,7 @@ export default function Ucalendar() {
         const createDayCell = (key: string | number, content?: React.ReactNode) => (
             <td
                 key={key}
-                className="border border-gray-300 h-20 md:h-[110px] align-top bg-gray-100"
+                className="border border-gray-300 h-[50px] md:h-[110px] align-top bg-gray-100"
             ></td>
         );
 
@@ -228,7 +228,7 @@ export default function Ucalendar() {
                     onClick={isAllowed ? () => handleDateClick(day) : undefined}
                     className={`
     border border-gray-300 align-top p-1 transition
-    h-[70px] md:h-[110px] overflow-hidden
+    h-[50px] md:h-[110px] overflow-hidden
     ${isAllowed
                             ? isSelected
                                 ? "bg-blue-500 text-white cursor-pointer"
