@@ -196,7 +196,7 @@ export default function Home() {
                 </div>
 
                 {/* 본문 */}
-                <div className="p-5 flex flex-col flex-1 justify-between">
+                <div className="p-4 flex flex-col flex-1 justify-between">
                   {/* <h4 className="text-[17px] font-bold text-gray-800 mb-2">{item.wr_shopnm}</h4> */}
                   <div
                     className="text-[21px] font-bold text-gray-800 mb-2"
@@ -220,30 +220,35 @@ export default function Home() {
                     />
                   </div>
 
-                  <div className="flex justify-between text-sm text-gray-700 mt-3 mb-3">
-                    <div className="flex items-center gap-2">
+                  <div className="flex flex-col md:flex-row md:justify-between text-sm text-gray-700 mt-3 mb-3 gap-2 md:gap-0">
+                    {/* 버튼 영역 */}
+                    <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
                       <button
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation(); // 부모 카드 클릭 방지
                           setSelectedItem(item);
                         }}
-                        className="btn btn-primary"
+                        className="btn btn-primary w-full md:w-auto"
                       >
                         상세보기
                       </button>
                       <button
                         type="button"
-                        className="btn btn-primary"
+                        className="btn btn-primary w-full md:w-auto"
                       >
                         예약하기
                       </button>
                     </div>
-                    <div className="text-right text-lg font-bold text-blue-600">
+
+                    {/* 가격 영역 */}
+                    <div className="text-right text-lg font-bold text-blue-600 mt-2 md:mt-0">
                       <span className="text-[17px] text-black">1인 참가비</span>{" "}
                       {item.wr_price === 0 ? "무료" : `${item.wr_price.toLocaleString()}원`}
                     </div>
                   </div>
+
+
 
 
                 </div>
