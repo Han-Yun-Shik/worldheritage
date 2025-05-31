@@ -302,22 +302,22 @@ export default function Ucalendar() {
 
                     {/* 달력 카드형 컨테이너 */}
                     <div className="bg-white rounded-xl shadow-lg p-6 md:p-8 transition-all">
-                        <div className="flex items-center justify-between mb-6">
-                            <button
+                        <div className="flex justify-center items-center mb-6">
+                            {/* <button
                                 onClick={handlePrevMonth}
                                 className="text-sm px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100"
                             >
                                 ◀ 이전달
-                            </button>
-                            <span className="text-xl font-semibold text-gray-800">
+                            </button> */}
+                            <span className="text-[21px] font-semibold text-gray-800 text-center">
                                 {currentYear}년 {String(currentMonth + 1).padStart(2, "0")}월
                             </span>
-                            <button
+                            {/* <button
                                 onClick={handleNextMonth}
                                 className="text-sm px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100"
                             >
                                 다음달 ▶
-                            </button>
+                            </button> */}
                         </div>
 
                         {/* 달력 테이블 */}
