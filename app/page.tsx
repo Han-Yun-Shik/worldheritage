@@ -220,6 +220,12 @@ export default function Home() {
                       >
                         상세보기
                       </button>
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                      >
+                        예약하기
+                      </button>
                     </div>
                     <div className="text-right text-lg font-bold text-blue-600">
                       <span className="text-[17px] text-black">1인 참가비</span>{" "}
