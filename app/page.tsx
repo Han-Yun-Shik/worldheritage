@@ -213,7 +213,7 @@ export default function Home() {
                     </svg>
                     {/* <span className="line-clamp-2">{item.wr_intro}</span> */}
                     <div
-                      className="line-clamp-2"
+                      className="whitespace-pre-wrap break-words"
                       dangerouslySetInnerHTML={{
                         __html: (item.wr_intro || "").replace(/\n/g, ""),
                       }}
